@@ -1,8 +1,36 @@
 """Qwen word alignment must preserve readable transcript text and speakers."""
 
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
+
+import numpy as np
 
 from exanote.pipeline import align_words, group_utterances
+from exanote import pipeline
+
+
+class LanguageDetectionTest(unittest.TestCase):
+    def test_import_detects_language_and_uses_it_for_alignment(self):
+        for detected, code, text in [("English", "en", "Hello there."), ("Korean", "ko", "안녕하세요.")]:
+            session = SimpleNamespace(transcribe=lambda audio, **kwargs: SimpleNamespace(
+                text=text, language=detected, chunks=[]))
+            aligner = SimpleNamespace(align=lambda audio, words, language: [SimpleNamespace(
+                text=words, start_time=0, end_time=1)])
+            with (
+                patch.object(pipeline, "_asr_session", return_value=session),
+                patch.object(pipeline, "_model", return_value="test"),
+                patch.object(pipeline, "release_models"),
+                patch.object(pipeline, "install_for_aligner"),
+                patch.object(pipeline, "_forced_aligner", return_value=aligner),
+                patch.object(session, "transcribe", wraps=session.transcribe) as decode,
+                patch.object(aligner, "align", wraps=aligner.align) as align,
+            ):
+                result = pipeline.transcribe(np.zeros(16000, dtype=np.float32))
+            self.assertIsNone(decode.call_args.kwargs["language"])
+            self.assertEqual(align.call_args.args[2], detected)
+            self.assertEqual(result["language"], code)
+            self.assertEqual(result["text"], text)
 
 
 class QwenAlignmentTest(unittest.TestCase):

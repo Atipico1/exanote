@@ -367,8 +367,16 @@ struct CalendarSection: View {
                 case .fullAccess:
                     SetupState(kind: .done("연결됨"))
                 case .notDetermined:
-                    Button("연결") { Task { await calendar.connect() } }.buttonStyle(PillButtonStyle(kind: .primary, compact: true))
+                    Button(calendar.connecting ? "연결 중…" : "연결") { Task { await calendar.connect() } }
+                        .buttonStyle(PillButtonStyle(kind: .primary, compact: true))
+                        .disabled(calendar.connecting)
                 default:
+                    Button("시스템 설정 열기") { SystemPermissions.open("Privacy_Calendars") }
+                        .buttonStyle(PillButtonStyle(compact: true))
+                }
+            }
+            if let error = calendar.error {
+                SettingsRow(symbol: "exclamationmark.triangle", title: "캘린더 연결 확인", detail: error) {
                     Button("시스템 설정 열기") { SystemPermissions.open("Privacy_Calendars") }
                         .buttonStyle(PillButtonStyle(compact: true))
                 }

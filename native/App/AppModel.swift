@@ -185,6 +185,7 @@ final class AppModel: ObservableObject {
             MainActor.assumeIsolated {
                 self?.permissions.refresh()
                 self?.login.refresh()
+                self?.calendar.reload()
                 Task { await Notifier.shared.refreshAuthorization() }
             }
         }

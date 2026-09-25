@@ -22,15 +22,28 @@ struct UpcomingMeeting: Identifiable, Hashable {
 final class UpcomingMeetingsStore: ObservableObject {
     @Published private(set) var meetings: [UpcomingMeeting] = []
     @Published private(set) var access = EKEventStore.authorizationStatus(for: .event)
+    @Published private(set) var connecting = false
+    @Published private(set) var error: String?
 
     private let store = EKEventStore()
     private var observing = false
 
     /// Shows the macOS permission prompt only the first time.
     func connect() async {
+        guard !connecting else { return }
+        connecting = true
+        error = nil
+        defer { connecting = false }
+        access = EKEventStore.authorizationStatus(for: .event)
         if access == .notDetermined {
-            _ = try? await store.requestFullAccessToEvents()
+            do { _ = try await store.requestFullAccessToEvents() }
+            catch {
+                self.error = "캘린더 접근을 요청하지 못했어요. 시스템 설정에서 Exanote의 캘린더 접근을 확인해 주세요."
+            }
             access = EKEventStore.authorizationStatus(for: .event)
+            if access == .notDetermined, error == nil {
+                error = "캘린더 권한 응답을 받지 못했어요. 시스템 설정에서 캘린더 접근을 확인해 주세요."
+            }
         }
         guard access == .fullAccess else { meetings = []; return }
         if !observing {
@@ -43,6 +56,7 @@ final class UpcomingMeetingsStore: ObservableObject {
     }
 
     func reload(hours: Double = 24) {
+        access = EKEventStore.authorizationStatus(for: .event)
         guard access == .fullAccess else { return }
         let now = Date()
         // Include meetings that started up to 15 minutes ago so a late join still shows.

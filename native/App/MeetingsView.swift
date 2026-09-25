@@ -439,6 +439,7 @@ struct MeetingsView: View {
 
     private var subtitle: String {
         if !trimmed.isEmpty { return searching ? "‘\(trimmed)’ 찾는 중" : "‘\(trimmed)’ 검색 결과 \(filtered.count)개" }
+        if period != .any { return "\(period.title) · 회의 \(filtered.count)개" }
         let count = inView.count
         if folder != nil { return "회의 \(count)개" }
         switch scope {

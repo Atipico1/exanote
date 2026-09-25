@@ -134,9 +134,10 @@ struct HomeView: View {
                 }
             }
         case .notDetermined:
-            InlineNote(symbol: "calendar.badge.plus", text: "macOS 캘린더에 추가된 Google·iCloud 일정을 읽어요. 일정은 이 Mac 밖으로 나가지 않아요.") {
-                Button { Task { await calendar.connect() } } label: { Label("캘린더 연결", systemImage: "calendar") }
+            InlineNote(symbol: "calendar.badge.plus", text: calendar.error ?? "macOS 캘린더에 추가된 Google·iCloud 일정을 읽어요. 일정은 이 Mac 밖으로 나가지 않아요.") {
+                Button { Task { await calendar.connect() } } label: { Label(calendar.connecting ? "연결 중…" : "캘린더 연결", systemImage: "calendar") }
                     .buttonStyle(PillButtonStyle(kind: .primary, compact: true))
+                    .disabled(calendar.connecting)
             }
         default:
             InlineNote(symbol: "calendar.badge.exclamationmark", text: "캘린더 접근이 꺼져 있어요. 시스템 설정에서 Exanote의 전체 접근을 허용하세요.") {

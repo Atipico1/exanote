@@ -85,7 +85,10 @@ def decode_audio(path: str | Path) -> np.ndarray:
         if result.returncode == 0:
             return _checked(_read_float_wav(output))
     if ffmpeg:
-        return _checked(_ffmpeg_decode(ffmpeg, path))
+        try:
+            return _checked(_ffmpeg_decode(ffmpeg, path))
+        except subprocess.CalledProcessError as error:
+            raise ValueError("오디오 파일을 읽을 수 없어요. 파일이 손상되지 않았는지, 다른 플레이어에서 재생되는지 확인한 뒤 다시 가져와 주세요.") from error
     raise ValueError("이 파일 형식은 열 수 없어요. wav, mp3, m4a, flac, aiff, ogg, mp4, mov 파일을 사용하세요.")
 
 
@@ -255,14 +258,14 @@ def speech_chunks(waveform: np.ndarray, speaker_turns: list[dict], sr: int = 160
     return pieces
 
 
-def _decode(session: Session, audio: np.ndarray, language: str = "Korean") -> tuple[str, list[str]]:
+def _decode(session: Session, audio: np.ndarray, language: str | None = None) -> tuple[str, list[str], str]:
     result = session.transcribe(audio, language=language, return_chunks=True)
-    return result.text, [item.get("finish_reason") for item in result.chunks or []]
+    return result.text, [item.get("finish_reason") for item in result.chunks or []], result.language
 
 
 def asr_chunks(waveform: np.ndarray, model: str | None = None, speaker_turns: list[dict] | None = None,
-               progress=None, *, language: str = "Korean") -> list[tuple[np.ndarray, float, str]]:
-    """Decode chunk by chunk and return (audio, offset, text) for each decoded piece.
+               progress=None, *, language: str | None = None) -> list[tuple[np.ndarray, float, str, str]]:
+    """Decode chunk by chunk and return (audio, offset, text, language) for each decoded piece.
 
     mlx-qwen3-asr stops a chunk when a 2-10 token pattern repeats twice, which also fires on a
     speaker genuinely repeating a phrase and drops the rest of that chunk. Such a chunk is split
@@ -277,19 +280,22 @@ def asr_chunks(waveform: np.ndarray, model: str | None = None, speaker_turns: li
     for index, (audio, offset) in enumerate(chunks):
         if progress:
             progress(index / max(1, len(chunks)))
-        text, reasons = _decode(session, audio, language)
+        text, reasons, detected = _decode(session, audio, language)
         if "repetition" in reasons and len(audio) >= 2 * 16000:
             halves = split_audio_into_chunks(audio, sr=16000, max_chunk_sec=len(audio) / 32000 + 0.01)
-            retried = [(half, offset + start, _decode(session, half, language)[0]) for half, start in halves]
+            retried = []
+            for half, start in halves:
+                half_text, _, half_language = _decode(session, half, language)
+                retried.append((half, offset + start, half_text, half_language))
             if len(_alphanumeric("".join(item[2] for item in retried))) > len(_alphanumeric(text)):
                 pieces.extend(retried)
                 continue
-        pieces.append((audio, offset, text))
+        pieces.append((audio, offset, text, detected))
     return pieces
 
 
 def transcribe(waveform: np.ndarray, model: str | None = None, speaker_turns: list[dict] | None = None,
-               progress=None, *, language: str = "Korean") -> dict:
+               progress=None, *, language: str | None = None) -> dict:
     """Transcribe, then align words in a second pass.
 
     With speaker_turns (Nemotron activity), chunks follow speech pauses and non-speech is skipped.
@@ -305,14 +311,23 @@ def transcribe(waveform: np.ndarray, model: str | None = None, speaker_turns: li
     install_for_aligner()
     aligner = _forced_aligner(_model("aligner"))
     segments = []
-    for index, (chunk_audio, offset, text) in enumerate(pieces):
+    for index, (chunk_audio, offset, text, detected) in enumerate(pieces):
         report("align", index / max(1, len(pieces)))
         if text.strip():
-            for item in aligner.align(chunk_audio, text, language):
+            for item in aligner.align(chunk_audio, text, detected):
                 segments.append({"text": item.text, "start": item.start_time + offset, "end": item.end_time + offset})
             mx.clear_cache()  # The library does this per chunk too; otherwise freed buffers pile up.
-    return {"text": join_text_parts([text for _, _, text in pieces], language),
-            "language": "en" if language == "English" else "ko", "segments": segments}
+    # Report the recognizer's detected language, not the UI's default locale.
+    totals: dict[str, int] = {}
+    for audio, _, text, detected in pieces:
+        if text.strip():
+            totals[detected] = totals.get(detected, 0) + len(audio)
+    detected = max(totals, key=totals.get) if totals else None
+    from mlx_qwen3_asr.tokenizer import known_language_aliases
+    aliases = known_language_aliases().get(detected, ())
+    code = next((alias for alias in aliases if len(alias) == 2), None)
+    return {"text": join_text_parts([text for _, _, text, _ in pieces], detected),
+            "language": code, "segments": segments}
 
 
 def _alphanumeric(text: str) -> str:
@@ -460,7 +475,7 @@ STAGES = {"decode": (0.0, 0.02), "diarize": (0.02, 0.18), "transcribe": (0.2, 0.
 
 def process_recording(path: str | Path, *, asr_model: str | None = None, notes_model: str | None = None,
                       diarization_weights: str | Path | None = None, two_channel: bool = False,
-                      progress=None, language: str = "Korean") -> dict:
+                      progress=None, language: str | None = None) -> dict:
     """two_channel: the file is Exanote's own recording (microphone left, system audio right).
 
     progress(stage, overall_fraction) is called as each stage moves, with a stage name from STAGES.

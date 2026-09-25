@@ -167,7 +167,7 @@ def _process_exclusive(meeting_id: str) -> None:
         result = process_recording(
             _folder(meeting_id) / meta["filename"],
             two_channel=meta.get("source") == "recording",
-            language="English" if meta.get("live_translation") or (_folder(meeting_id) / "live.json").exists() else "Korean",
+            language="English" if meta.get("live_translation") or (_folder(meeting_id) / "live.json").exists() else None,
             progress=lambda stage, fraction: _set_progress(meeting_id, stage, fraction),
         )
         (_folder(meeting_id) / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
