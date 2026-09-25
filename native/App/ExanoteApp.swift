@@ -569,7 +569,8 @@ private struct SidebarHeader: View {
 
     var body: some View {
         Text(title)
-            .font(.sidebar(offset: -5, weight: .medium))
+            .font(Typography.shared.font(size: CGFloat(Typography.shared.sidebarSize) * 0.85,
+                                         weight: .medium, design: .default))
             .foregroundStyle(.secondary)
             .textCase(nil)
             .padding(.leading, 12)
