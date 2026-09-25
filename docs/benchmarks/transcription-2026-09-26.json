@@ -1,0 +1,257 @@
+{
+  "dataset": "AI Hub 464 New_Sample.zip",
+  "source_id": "DGBAH21000196",
+  "normalization": "NFKC, casefold, keep alphanumeric characters",
+  "aggregation": "total character edits / total reference characters",
+  "models": {
+    "google/gemini-3.5-transcribe": {
+      "complete": true,
+      "clips": [
+        {
+          "clip": "01_DGBAH21000196_0000s",
+          "reference_characters": 1701,
+          "edits": 94
+        },
+        {
+          "clip": "02_DGBAH21000196_0400s",
+          "reference_characters": 1794,
+          "edits": 149
+        },
+        {
+          "clip": "03_DGBAH21000196_0800s",
+          "reference_characters": 1744,
+          "edits": 157
+        },
+        {
+          "clip": "04_DGBAH21000196_1200s",
+          "reference_characters": 1822,
+          "edits": 109
+        },
+        {
+          "clip": "05_DGBAH21000196_1600s",
+          "reference_characters": 1720,
+          "edits": 167
+        },
+        {
+          "clip": "06_DGBAH21000196_2000s",
+          "reference_characters": 1698,
+          "edits": 121
+        },
+        {
+          "clip": "07_DGBAH21000196_2400s",
+          "reference_characters": 1638,
+          "edits": 128
+        },
+        {
+          "clip": "08_DGBAH21000196_2800s",
+          "reference_characters": 1725,
+          "edits": 98
+        },
+        {
+          "clip": "09_DGBAH21000196_3200s",
+          "reference_characters": 1795,
+          "edits": 131
+        },
+        {
+          "clip": "10_DGBAH21000196_3600s",
+          "reference_characters": 1748,
+          "edits": 130
+        }
+      ],
+      "reference_characters": 17385,
+      "edits": 1284,
+      "cer_percent": 7.3856773080241584
+    },
+    "meta/muse-voice-transcribe-1.0": {
+      "complete": true,
+      "clips": [
+        {
+          "clip": "01_DGBAH21000196_0000s",
+          "reference_characters": 1701,
+          "edits": 89
+        },
+        {
+          "clip": "02_DGBAH21000196_0400s",
+          "reference_characters": 1794,
+          "edits": 97
+        },
+        {
+          "clip": "03_DGBAH21000196_0800s",
+          "reference_characters": 1744,
+          "edits": 160
+        },
+        {
+          "clip": "04_DGBAH21000196_1200s",
+          "reference_characters": 1822,
+          "edits": 74
+        },
+        {
+          "clip": "05_DGBAH21000196_1600s",
+          "reference_characters": 1720,
+          "edits": 151
+        },
+        {
+          "clip": "06_DGBAH21000196_2000s",
+          "reference_characters": 1698,
+          "edits": 114
+        },
+        {
+          "clip": "07_DGBAH21000196_2400s",
+          "reference_characters": 1638,
+          "edits": 148
+        },
+        {
+          "clip": "08_DGBAH21000196_2800s",
+          "reference_characters": 1725,
+          "edits": 70
+        },
+        {
+          "clip": "09_DGBAH21000196_3200s",
+          "reference_characters": 1795,
+          "edits": 116
+        },
+        {
+          "clip": "10_DGBAH21000196_3600s",
+          "reference_characters": 1748,
+          "edits": 131
+        }
+      ],
+      "reference_characters": 17385,
+      "edits": 1150,
+      "cer_percent": 6.614897900488927
+    },
+    "microsoft/mai-transcribe-2": {
+      "complete": true,
+      "clips": [
+        {
+          "clip": "01_DGBAH21000196_0000s",
+          "reference_characters": 1701,
+          "edits": 95
+        },
+        {
+          "clip": "02_DGBAH21000196_0400s",
+          "reference_characters": 1794,
+          "edits": 88
+        },
+        {
+          "clip": "03_DGBAH21000196_0800s",
+          "reference_characters": 1744,
+          "edits": 146
+        },
+        {
+          "clip": "04_DGBAH21000196_1200s",
+          "reference_characters": 1822,
+          "edits": 71
+        },
+        {
+          "clip": "05_DGBAH21000196_1600s",
+          "reference_characters": 1720,
+          "edits": 154
+        },
+        {
+          "clip": "06_DGBAH21000196_2000s",
+          "reference_characters": 1698,
+          "edits": 127
+        },
+        {
+          "clip": "07_DGBAH21000196_2400s",
+          "reference_characters": 1638,
+          "edits": 125
+        },
+        {
+          "clip": "08_DGBAH21000196_2800s",
+          "reference_characters": 1725,
+          "edits": 88
+        },
+        {
+          "clip": "09_DGBAH21000196_3200s",
+          "reference_characters": 1795,
+          "edits": 103
+        },
+        {
+          "clip": "10_DGBAH21000196_3600s",
+          "reference_characters": 1748,
+          "edits": 130
+        }
+      ],
+      "reference_characters": 17385,
+      "edits": 1127,
+      "cer_percent": 6.4825999424791485
+    },
+    "T사": {
+      "reference_characters": 17385,
+      "edits": 1131,
+      "cer_percent": 6.505608283002588,
+      "clips": [
+        {
+          "clip": "01_DGBAH21000196_0000s",
+          "reference_characters": 1701,
+          "edits": 89,
+          "audio_sha256": "c47e3087f1244587d9b276103be9db9ab6c044b2307257209dd55e0cef8fa351"
+        },
+        {
+          "clip": "02_DGBAH21000196_0400s",
+          "reference_characters": 1794,
+          "edits": 136,
+          "audio_sha256": "bef9135ffb27d8698939a7c5fd1d51a05fa1ceec562f3af35b0f7a93d7a56672"
+        },
+        {
+          "clip": "03_DGBAH21000196_0800s",
+          "reference_characters": 1744,
+          "edits": 123,
+          "audio_sha256": "2e4d4729f0da2f4465b37129e6961aa3619660698f96ddc491b90f843fa7dad1"
+        },
+        {
+          "clip": "04_DGBAH21000196_1200s",
+          "reference_characters": 1822,
+          "edits": 54,
+          "audio_sha256": "993b8dd63c3ad76200e6052e6b53bb76ddaad7a091f83897833b8dc76cfd94dc"
+        },
+        {
+          "clip": "05_DGBAH21000196_1600s",
+          "reference_characters": 1720,
+          "edits": 145,
+          "audio_sha256": "3c76b5fc6fe622e4d931ef983e24046fb9e7bea2045fa1f1cebc6601c1747d8a"
+        },
+        {
+          "clip": "06_DGBAH21000196_2000s",
+          "reference_characters": 1698,
+          "edits": 149,
+          "audio_sha256": "34f5b59355a67012f0cecca826aaef52b0756ff4eef2f282221a3d469c2499f2"
+        },
+        {
+          "clip": "07_DGBAH21000196_2400s",
+          "reference_characters": 1638,
+          "edits": 105,
+          "audio_sha256": "10f5dbea64bfc390204ee628dda144483df73d4aeec1130f498f8bac24d577bc"
+        },
+        {
+          "clip": "08_DGBAH21000196_2800s",
+          "reference_characters": 1725,
+          "edits": 71,
+          "audio_sha256": "02d9f7b083dabf24742e4338706d8d2749a9fef9a192b5582d44175871f8d4bf"
+        },
+        {
+          "clip": "09_DGBAH21000196_3200s",
+          "reference_characters": 1795,
+          "edits": 132,
+          "audio_sha256": "0a087d0f739f839f4e16fe8978ec3b16c9594b28976cdb339b63117a70545100"
+        },
+        {
+          "clip": "10_DGBAH21000196_3600s",
+          "reference_characters": 1748,
+          "edits": 127,
+          "audio_sha256": "68b8c51765136fdfa6f8638aa1070f531dfe35514845537d9e19b4941cc0f2c5"
+        }
+      ]
+    },
+    "Exanote": {
+      "reference_characters": 17385,
+      "edits": 1335,
+      "cer_percent": 7.679033649698016,
+      "pipeline": "eval_A_vad"
+    }
+  },
+  "measured_date": "2026-09-26",
+  "audio_seconds": 2903.008
+}
