@@ -357,11 +357,11 @@ private struct Sidebar: View {
         case "recording":
             Circle().fill(Color.recording).frame(width: 7, height: 7).accessibilityLabel("녹음 중")
         case "queued", "processing":
-            Text("처리 중").font(.sidebar(offset: -2)).foregroundStyle(.tertiary)
+            Text("처리 중").font(.sidebar(offset: -4)).foregroundStyle(.tertiary)
         case "error":
-            Image(systemName: "exclamationmark.circle").font(.sidebar(offset: -2)).foregroundStyle(Color.recording).accessibilityLabel("오류")
+            Image(systemName: "exclamationmark.circle").font(.sidebar(offset: -4)).foregroundStyle(Color.recording).accessibilityLabel("오류")
         default:
-            Text(relativeDay(item.date)).font(.sidebar(offset: -2)).foregroundStyle(.tertiary)
+            Text(relativeDay(item.date)).font(.sidebar(offset: -4)).foregroundStyle(.tertiary)
         }
     }
 
@@ -374,16 +374,16 @@ private struct Sidebar: View {
 
     var body: some View {
         List(selection: $nav.route) {
-            Label { Text("홈").font(.sidebar()) } icon: { Image(systemName: "house").font(.sidebar()).foregroundStyle(.secondary) }
+            Label { Text("홈").font(.sidebar()) } icon: { Image(systemName: "house").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
                 .sidebarRow(.home, selected: nav.route)
-            Label { Text("회의").font(.sidebar()) } icon: { Image(systemName: "tray.full").font(.sidebar()).foregroundStyle(.secondary) }
+            Label { Text("회의").font(.sidebar()) } icon: { Image(systemName: "tray.full").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
                 .badge(items.count)
                 .sidebarRow(.meetings, selected: nav.route)
             Button(action: find) {
                 HStack {
-                    Label { Text("검색").font(.sidebar()) } icon: { Image(systemName: "magnifyingglass").font(.sidebar()).foregroundStyle(.secondary) }
+                    Label { Text("검색").font(.sidebar()) } icon: { Image(systemName: "magnifyingglass").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
                     Spacer()
-                    Text("⌘F").font(.sidebar(offset: -2)).foregroundStyle(.tertiary)
+                    Text("⌘F").font(.sidebar(offset: -4)).foregroundStyle(.tertiary)
                 }
                 .contentShape(Rectangle())
             }
@@ -418,10 +418,10 @@ private struct Sidebar: View {
                     ForEach(spaces, id: \.self) { scope in
                         HStack {
                             Label { Text(scope.title(sharedName: sharedName)).font(.sidebar()).lineLimit(1) } icon: {
-                                Image(systemName: scope.symbol).font(.sidebar()).foregroundStyle(.secondary)
+                                Image(systemName: scope.symbol).font(.sidebar(offset: -2)).foregroundStyle(.secondary)
                             }
                             Spacer()
-                            Text("\(items.filter(scope.contains).count)").font(.sidebar(offset: -2).monospacedDigit()).foregroundStyle(.tertiary)
+                            Text("\(items.filter(scope.contains).count)").font(.sidebar(offset: -4).monospacedDigit()).foregroundStyle(.tertiary)
                         }
                         .sidebarRow(.space(scope), selected: nav.route)
                     }
@@ -434,9 +434,9 @@ private struct Sidebar: View {
                 let ids = Set(items.map(\.id))
                 ForEach(folders.folders) { folder in
                     HStack {
-                        Label { Text(folder.name).font(.sidebar()).lineLimit(1) } icon: { Image(systemName: "folder").font(.sidebar()).foregroundStyle(.secondary) }
+                        Label { Text(folder.name).font(.sidebar()).lineLimit(1) } icon: { Image(systemName: "folder").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
                         Spacer()
-                        Text("\(folders.count(folder, among: ids))").font(.sidebar(offset: -2).monospacedDigit()).foregroundStyle(.tertiary)
+                        Text("\(folders.count(folder, among: ids))").font(.sidebar(offset: -4).monospacedDigit()).foregroundStyle(.tertiary)
                     }
                     .sidebarRow(.folder(folder.id), selected: nav.route)
                     // Drop a meeting from the sidebar or the meetings page to file it.
@@ -450,7 +450,7 @@ private struct Sidebar: View {
                     }
                 }
                 Button { folders.requestCreate() } label: {
-                    Label { Text("새 폴더").font(.sidebar()) } icon: { Image(systemName: "plus").font(.sidebar()).foregroundStyle(.secondary) }
+                    Label { Text("새 폴더").font(.sidebar()) } icon: { Image(systemName: "plus").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
@@ -541,7 +541,7 @@ private struct SidebarHeader: View {
 
     var body: some View {
         Text(title)
-            .font(.sidebar(offset: -2, weight: .medium))
+            .font(.sidebar(offset: -5, weight: .medium))
             .foregroundStyle(.secondary)
             .textCase(nil)
             .padding(.top, Typography.shared.sidebarSectionGap)
@@ -553,7 +553,9 @@ private struct SidebarHeader: View {
 private struct SidebarLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 8) {
-            configuration.icon.frame(width: CGFloat(Typography.shared.sidebarSize) + 2)
+            configuration.icon
+                .font(.sidebar(offset: -2))
+                .frame(width: CGFloat(Typography.shared.sidebarSize) + 2)
             configuration.title
         }
     }

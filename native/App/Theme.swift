@@ -23,6 +23,7 @@ extension Color {
     static let surface = Color(nsColor: .adaptive(light: .white, dark: NSColor(hex: 0x202020)))
     static let raised = Color(nsColor: .adaptive(light: NSColor(hex: 0xF1F1EF), dark: NSColor(hex: 0x2C2C2C)))
     /// The selected sidebar row: one step darker than the sidebar, like Notion's.
+    static let sidebarHover = Color(nsColor: .adaptive(light: NSColor(hex: 0xEEEEEB), dark: NSColor(hex: 0x292929)))
     static let sidebarSelection = Color(nsColor: .adaptive(light: NSColor(hex: 0xEAEAE7), dark: NSColor(hex: 0x2F2F2F)))
     static let hairline = Color(nsColor: .adaptive(light: NSColor(white: 0, alpha: 0.08), dark: NSColor(white: 1, alpha: 0.09)))
     static let brandFill = Color(nsColor: NSColor(hex: 0xD1FE17))
@@ -342,19 +343,31 @@ struct ToolbarBackdrop: View {
     }
 }
 
-extension View {
-    func sidebarSpacing() -> some View {
-        self.frame(minHeight: Typography.shared.sidebarRowHeight)
-            .listRowInsets(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8))
-    }
+private struct SidebarRowAppearance: ViewModifier {
+    var selected = false
+    @State private var hovering = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    /// Tags a sidebar row and draws the Notion-style gray selection behind it.
+    func body(content: Content) -> some View {
+        content
+            .frame(minHeight: Typography.shared.sidebarRowHeight)
+            .contentShape(Rectangle())
+            .listRowInsets(EdgeInsets(top: 1, leading: 8, bottom: 1, trailing: 8))
+            .listRowBackground(
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .fill(selected ? Color.sidebarSelection : hovering ? Color.sidebarHover : .clear)
+                    .padding(.horizontal, 6)
+            )
+            .onHover { hovering = $0 }
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.1), value: hovering)
+    }
+}
+
+extension View {
+    func sidebarSpacing() -> some View { modifier(SidebarRowAppearance()) }
+
     func sidebarRow(_ route: Route, selected: Route?) -> some View {
-        sidebarSpacing().tag(route).listRowBackground(
-            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(selected == route ? Color.sidebarSelection : .clear)
-                .padding(.horizontal, 10)
-        )
+        modifier(SidebarRowAppearance(selected: selected == route)).tag(route)
     }
 }
 

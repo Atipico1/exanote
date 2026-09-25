@@ -10,8 +10,8 @@ final class Typography {
     var sizeLevel: Int { didSet { UserDefaults.standard.set(sizeLevel, forKey: "textSizeLevel") } }
     var bodySize: Double { Double(10 + sizeLevel * 2) }
     var sidebarSize: Double { Double(12 + sizeLevel * 2) }
-    var sidebarRowHeight: CGFloat { CGFloat(17 + sizeLevel * 5) }
-    var sidebarSectionGap: CGFloat { CGFloat(3 + sizeLevel * 2) }
+    var sidebarRowHeight: CGFloat { CGFloat(20 + sizeLevel * 3) }
+    var sidebarSectionGap: CGFloat { CGFloat(5 + sizeLevel) }
     var scale: CGFloat { CGFloat(bodySize / 14) }
 
     private init() {
