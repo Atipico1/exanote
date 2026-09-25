@@ -387,7 +387,7 @@ private struct Sidebar: View {
                         Image(systemName: "doc.text")
                             .font(.sidebar(offset: -2)).foregroundStyle(.secondary)
                             .frame(width: CGFloat(Typography.shared.sidebarSize) + 2)
-                        Text(item.title).font(.sidebar()).lineLimit(1)
+                        Text(item.title).font(.sidebar()).foregroundStyle(Color.sidebarTitle).lineLimit(1).help(item.title)
                         Spacer(minLength: 4)
                         recentStatus(item)
                     }
@@ -427,7 +427,7 @@ private struct Sidebar: View {
                 let ids = Set(items.map(\.id))
                 ForEach(folders.folders) { folder in
                     HStack {
-                        Label { Text(folder.name).font(.sidebar()).lineLimit(1) } icon: { Image(systemName: "folder").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
+                        Label { Text(folder.name).font(.sidebar()).foregroundStyle(Color.sidebarTitle).lineLimit(1).help(folder.name) } icon: { Image(systemName: "folder").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
                         Spacer()
                         Text("\(folders.count(folder, among: ids))").font(.sidebar(offset: -4).monospacedDigit()).foregroundStyle(.tertiary)
                     }

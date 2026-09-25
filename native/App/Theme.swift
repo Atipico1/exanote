@@ -23,6 +23,7 @@ extension Color {
     static let surface = Color(nsColor: .adaptive(light: .white, dark: NSColor(hex: 0x202020)))
     static let raised = Color(nsColor: .adaptive(light: NSColor(hex: 0xF1F1EF), dark: NSColor(hex: 0x2C2C2C)))
     /// The selected sidebar row: one step darker than the sidebar, like Notion's.
+    static let sidebarTitle = Color(nsColor: .adaptive(light: NSColor(hex: 0x37352F), dark: NSColor(hex: 0xD4D4D4)))
     static let sidebarHover = Color(nsColor: .adaptive(light: NSColor(hex: 0xEEEEEB), dark: NSColor(hex: 0x292929)))
     static let sidebarSelection = Color(nsColor: .adaptive(light: NSColor(hex: 0xEAEAE7), dark: NSColor(hex: 0x2F2F2F)))
     static let hairline = Color(nsColor: .adaptive(light: NSColor(white: 0, alpha: 0.08), dark: NSColor(white: 1, alpha: 0.09)))
