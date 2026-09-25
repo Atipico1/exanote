@@ -86,7 +86,7 @@ struct ExanoteApp: App {
         Window("Exanote", id: "main") {
             NavigationSplitView {
                 Sidebar(store: store, workspace: workspace, nav: nav, folders: model.folders, items: items, sharedName: sharedName, find: find)
-                    .navigationSplitViewColumnWidth(min: 252, ideal: 300, max: 400)
+                    .navigationSplitViewColumnWidth(min: 252, ideal: 270, max: 400)
             } detail: {
                 detail
                     .navigationTitle(windowTitle)
@@ -372,6 +372,13 @@ private struct Sidebar: View {
         return date.formatted(.dateTime.month().day())
     }
 
+    private func shortcutIcon(_ symbol: String) -> some View {
+        Image(systemName: symbol)
+            .font(.sidebar(offset: -2, weight: .medium))
+            .frame(width: CGFloat(Typography.shared.sidebarSize) + 8,
+                   height: CGFloat(Typography.shared.sidebarSize) + 8)
+    }
+
     var body: some View {
         List(selection: $nav.route) {
             Section {
@@ -473,20 +480,23 @@ private struct Sidebar: View {
                     .frame(maxWidth: .infinity)
                     .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(Color.hairline))
                 }
-                .buttonStyle(SidebarShortcutStyle())
+                .buttonStyle(.plain)
                 .keyboardShortcut("k", modifiers: .command)
                 HStack(spacing: 4) {
                     Button { nav.route = .home } label: {
-                        Label("홈", systemImage: "house.fill")
+                        HStack(spacing: 6) {
+                            shortcutIcon("house.fill")
+                            Text("홈")
+                        }.frame(height: CGFloat(Typography.shared.sidebarSize) + 8)
                     }
                     .buttonStyle(SidebarShortcutStyle(selected: nav.route == .home))
                     Button { nav.route = .meetings } label: {
-                        Image(systemName: "tray.full").accessibilityLabel("회의")
+                        shortcutIcon("tray.full").accessibilityLabel("회의")
                     }
                     .buttonStyle(SidebarShortcutStyle(selected: nav.route == .meetings))
                     .help("회의 · \(items.count)개")
                     Button { nav.route = .settings(.calendar) } label: {
-                        Image(systemName: "calendar").accessibilityLabel("캘린더")
+                        shortcutIcon("calendar").accessibilityLabel("캘린더")
                     }
                     .buttonStyle(SidebarShortcutStyle(selected: nav.route == .settings(.calendar)))
                     .help("캘린더")

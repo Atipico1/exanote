@@ -312,7 +312,7 @@ struct PermissionsSection: View {
                 state(permissions.systemAudio) { Task { await permissions.requestSystemAudio() } }
             }
             if includeNotifications {
-                SettingsRow(symbol: "bell", title: "알림", detail: "회의가 시작되거나 노트가 준비되면 알려요") {
+                SettingsRow(symbol: "bell", title: "macOS 알림 권한", detail: notifier.authorized == true ? "Exanote가 이 Mac에 알림을 표시할 수 있어요" : "회의 녹음 제안과 노트 완성 알림을 받으려면 허용해 주세요") {
                     if notifier.authorized == true {
                         SetupState(kind: .done("허용됨"))
                     } else {
@@ -321,9 +321,13 @@ struct PermissionsSection: View {
                         })
                     }
                 }
-                SettingsToggle(symbol: "bell.badge", title: "회의가 시작되면 알림 보내기",
-                               detail: "회의 앱이 마이크를 쓰기 시작하면 알려요. 녹음은 알림을 누를 때만 시작해요.",
-                               isOn: $notifyOnDetection)
+                SettingsToggle(symbol: "bell.badge", title: "회의 감지 시 녹음 제안",
+                               detail: notifier.authorized == true
+                                   ? "통화를 감지하면 녹음할지 물어봐요. 꺼도 노트 완성 알림은 받아요."
+                                   : "위의 macOS 알림 권한을 먼저 허용해 주세요",
+                               isOn: Binding(get: { notifier.authorized == true && notifyOnDetection },
+                                             set: { notifyOnDetection = $0 }))
+                    .disabled(notifier.authorized != true)
             }
         }
         .task { await permissions.watch() }
