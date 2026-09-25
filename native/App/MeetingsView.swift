@@ -132,10 +132,52 @@ struct MeetingPeriodGroup: Identifiable {
     }
 }
 
+/// Keep the matching words visible instead of truncating the beginning of a long utterance.
+private enum SearchExcerpt {
+    static func text(_ source: String, query: String, context: Bool = false) -> AttributedString {
+        let plain = source.split(whereSeparator: { $0.isWhitespace }).joined(separator: " ")
+        guard !query.isEmpty,
+              let match = plain.range(of: query, options: [.caseInsensitive, .diacriticInsensitive]) else {
+            return AttributedString(plain)
+        }
+        var visible = plain
+        if context {
+            var start = plain.index(match.lowerBound, offsetBy: -22, limitedBy: plain.startIndex) ?? plain.startIndex
+            var end = plain.index(match.upperBound, offsetBy: 45, limitedBy: plain.endIndex) ?? plain.endIndex
+            // Expand a bounded amount to avoid cutting a Korean word or a number in half.
+            for _ in 0..<12 {
+                guard start > plain.startIndex else { break }
+                let previous = plain.index(before: start)
+                guard !plain[previous].isWhitespace else { break }
+                start = previous
+            }
+            for _ in 0..<12 {
+                guard end < plain.endIndex, !plain[end].isWhitespace else { break }
+                end = plain.index(after: end)
+            }
+            visible = (start > plain.startIndex ? "… " : "") + String(plain[start..<end]) + (end < plain.endIndex ? " …" : "")
+        }
+        var result = AttributedString(visible)
+        var cursor = visible.startIndex
+        while cursor < visible.endIndex,
+              let range = visible.range(of: query, options: [.caseInsensitive, .diacriticInsensitive], range: cursor..<visible.endIndex) {
+            if let lower = AttributedString.Index(range.lowerBound, within: result),
+               let upper = AttributedString.Index(range.upperBound, within: result) {
+                result[lower..<upper].foregroundColor = Color.primary
+                result[lower..<upper].backgroundColor = Color.yellow.opacity(0.25)
+                result[lower..<upper].inlinePresentationIntent = .stronglyEmphasized
+            }
+            cursor = range.upperBound
+        }
+        return result
+    }
+}
+
 struct MeetingListRow: View {
     let item: MeetingListItem
     /// The first transcript or summary line matching a search.
     var snippet: String? = nil
+    var searchQuery: String = ""
     var folderName: String? = nil
     /// Non-nil while choosing meetings: a checkbox replaces the source icon.
     var checked: Bool? = nil
@@ -157,7 +199,7 @@ struct MeetingListRow: View {
             }
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 8) {
-                    Text(item.title).font(.exHeadline).lineLimit(1)
+                    Text(SearchExcerpt.text(item.title, query: searchQuery)).font(.exHeadline).lineLimit(1)
                     if item.demo { Tag(text: "예시") }
                     if let folderName {
                         Label(folderName, systemImage: "folder")
@@ -172,7 +214,9 @@ struct MeetingListRow: View {
                     }
                 }
                 if let snippet {
-                    Text(snippet).font(.app(size: 12)).foregroundStyle(.secondary).lineLimit(1)
+                    Text(SearchExcerpt.text(snippet, query: searchQuery, context: true))
+                        .font(.app(size: 12)).foregroundStyle(.secondary)
+                        .lineLimit(2).fixedSize(horizontal: false, vertical: true)
                 }
             }
             Spacer(minLength: 16)
@@ -220,6 +264,7 @@ struct MeetingList: View {
     let items: [MeetingListItem]
     var grouped = false
     var snippets: [String: String] = [:]
+    var searchQuery: String = ""
     var folderNames: [String: String] = [:]
     var selection: Binding<Set<String>>? = nil
     let open: (Route) -> Void
@@ -267,7 +312,7 @@ struct MeetingList: View {
                 open(item.route)
             }
         } label: {
-            MeetingListRow(item: item, snippet: snippets[item.id], folderName: folderNames[item.id],
+            MeetingListRow(item: item, snippet: snippets[item.id], searchQuery: searchQuery, folderName: folderNames[item.id],
                            checked: selection.map { $0.wrappedValue.contains(item.id) })
         }
         .buttonStyle(.plain)
@@ -384,7 +429,7 @@ struct MeetingsView: View {
                                title: searching ? "검색하는 중…" : emptyTitle,
                                message: emptyMessage)
                 } else {
-                    MeetingList(items: filtered, grouped: trimmed.isEmpty, snippets: hits.compactMapValues(\.snippet),
+                    MeetingList(items: filtered, grouped: trimmed.isEmpty, snippets: hits.compactMapValues(\.snippet), searchQuery: trimmed,
                                 folderNames: folderID == nil ? folders.assignments.compactMapValues { folders.folder(id: $0)?.name } : [:],
                                 selection: selection == nil ? nil : Binding(get: { selection ?? [] }, set: { selection = $0 }),
                                 open: open)
@@ -454,6 +499,7 @@ struct MeetingsView: View {
     /// after typing stops.
     private func search() async {
         guard trimmed.count >= 2 else { hits = [:]; searching = false; return }
+        hits = [:]
         searching = true
         try? await Task.sleep(for: .milliseconds(250))
         guard !Task.isCancelled else { return }
