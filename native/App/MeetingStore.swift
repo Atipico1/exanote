@@ -155,6 +155,9 @@ final class MeetingStore: ObservableObject {
 
     private var worker: Process?
     private var started = false
+    @Published private(set) var stoppingForUpdate = false
+    private var pendingMemos: [String: String] = [:]
+    private var memoWrites = 0
     let capture = AudioCapture()
     private var liveSender: LiveAudioSender?
     private var livePoll: Task<Void, Never>?
@@ -307,6 +310,32 @@ final class MeetingStore: ObservableObject {
 
     private func fetchStatus() async throws -> WorkerStatus { try await fetch("api/status") }
 
+    /// The authenticated worker refuses shutdown while recording, queued or processing.
+    /// Do not replace Python files until that process has actually exited.
+    func stopWorkerForUpdate() async -> Bool {
+        guard !recording, !capture.isRunning, !busy, memoWrites == 0 else { return false }
+        for (id, text) in pendingMemos { await saveMemo(meetingID: id, text: text) }
+        guard pendingMemos.isEmpty, memoWrites == 0 else { return false }
+        stoppingForUpdate = true
+        busy = true
+        defer { busy = false }
+        do {
+            struct Reply: Decodable { let ok: Bool }
+            let _: Reply = try await fetch("api/shutdown", method: "POST")
+            for _ in 0..<30 {
+                try? await Task.sleep(for: .milliseconds(100))
+                do { _ = try await fetchStatus() }
+                catch let error as URLError where error.code == .cannotConnectToHost {
+                    return true
+                }
+            }
+        } catch let error as URLError where error.code == .cannotConnectToHost {
+            return true
+        } catch { /* Fail closed: a busy or unavailable worker must not be interrupted. */ }
+        stoppingForUpdate = false
+        return false
+    }
+
     func refresh() async throws {
         _ = try await fetchStatus()
         // This app's capture is the truth: the worker may have restarted mid-recording.
@@ -335,7 +364,7 @@ final class MeetingStore: ObservableObject {
 
     /// event: the calendar event happening now; it names the meeting and can file it into a folder.
     func startRecording(title: String? = nil, event: UpcomingMeeting? = nil) async {
-        guard !recording else { return }
+        guard !recording, !stoppingForUpdate else { return }
         busy = true
         error = nil
         defer { busy = false }
@@ -476,17 +505,26 @@ final class MeetingStore: ObservableObject {
     }
 
     /// Saves the memo without reloading, so the editor keeps its cursor.
+    func stageMemo(meetingID: String, text: String) {
+        pendingMemos[meetingID] = text
+    }
+
     func saveMemo(meetingID: String, text: String) async {
+        guard !stoppingForUpdate else { return }
+        memoWrites += 1
+        defer { memoWrites -= 1 }
         struct Change: Encodable { let text: String }
         do {
             let _: Meeting = try await fetch("api/meetings/\(meetingID)/memo", method: "PUT",
                                              body: JSONEncoder().encode(Change(text: text)), contentType: "application/json")
+            if pendingMemos[meetingID] == text { pendingMemos.removeValue(forKey: meetingID) }
         } catch { self.error = error.localizedDescription }
     }
 
     func dismissRecovered() { recovered = nil }
 
     func importFile(_ url: URL) async {
+        guard !stoppingForUpdate else { return }
         busy = true
         error = nil
         let access = url.startAccessingSecurityScopedResource()

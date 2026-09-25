@@ -25,8 +25,21 @@ final class UpcomingMeetingsStore: ObservableObject {
     @Published private(set) var connecting = false
     @Published private(set) var error: String?
 
-    private let store = EKEventStore()
-    private var observing = false
+    private var store = EKEventStore()
+    private var observer: NSObjectProtocol?
+
+    init() {
+        // Register even when permission is initially denied; granting access in Settings
+        // must not depend on a previous successful connect() call.
+        observer = NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in self?.reload() }
+        }
+    }
+
+    func refreshAuthorization() {
+        store = EKEventStore()
+        reload()
+    }
 
     /// Shows the macOS permission prompt only the first time.
     func connect() async {
@@ -46,18 +59,13 @@ final class UpcomingMeetingsStore: ObservableObject {
             }
         }
         guard access == .fullAccess else { meetings = []; return }
-        if !observing {
-            observing = true
-            NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { [weak self] _ in
-                Task { @MainActor in self?.reload() }
-            }
-        }
         reload()
     }
 
     func reload(hours: Double = 24) {
         access = EKEventStore.authorizationStatus(for: .event)
-        guard access == .fullAccess else { return }
+        guard access == .fullAccess else { meetings = []; return }
+        error = nil
         let now = Date()
         // Include meetings that started up to 15 minutes ago so a late join still shows.
         let predicate = store.predicateForEvents(withStart: now.addingTimeInterval(-15 * 60), end: now.addingTimeInterval(hours * 3600), calendars: nil)

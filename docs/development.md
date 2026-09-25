@@ -51,3 +51,20 @@ NOTARY_PROFILE=exanote scripts/notarize_app.sh
 .venv/bin/python scripts/generate_live_synthetic.py
 .venv/bin/python scripts/check_live_stream.py --fixture held_out_voices --pace
 ```
+
+## 자동 업데이트 배포
+
+Sparkle 2.10.0을 사용합니다. 앱의 일반 설정에서 자동 확인·다운로드를 조절하고,
+Exanote 메뉴에서 수동으로 업데이트를 확인합니다. 녹음·처리가 끝나고 메모를 저장한 뒤
+로컬 Python 워커를 종료하고 앱을 교체합니다. 회의와 모델 데이터 디렉터리는 교체하지 않습니다.
+
+- `project.yml`의 `CFBundleVersion`은 매 배포마다 증가시킵니다.
+- 업데이트 피드: `https://atipico1.github.io/exanote/appcast.xml`
+- 개인 EdDSA 키는 배포 Mac 키체인의 `exanote` 계정에 보관합니다. 저장소에는 공개키만 있습니다.
+- Sparkle 패키지 버전과 `Package.resolved`를 함께 고정합니다.
+- Developer ID 서명 후 Apple 공증을 받고, 공증 티켓을 붙인 앱으로 DMG와 업데이트 ZIP을 만듭니다.
+- `SPARKLE_BIN=.build/sparkle-2.10.0/bin scripts/prepare_update.sh build/release-VERSION vVERSION`
+  명령은 공증 상태를 검사한 뒤 ZIP, EdDSA 서명된 appcast, 체크섬을 생성합니다.
+- GitHub Release에 DMG·ZIP·체크섬을 먼저 게시하고, GitHub Pages의 `appcast.xml`을 마지막에 갱신합니다.
+- Xcode 계정으로 공증할 때는 Organizer의 Direct Distribution을 사용하고 승인 후 Export Notarized App으로 내보냅니다.
+  CLI 경로는 `scripts/notarize_app.sh`와 별도로 등록한 키체인 프로필을 사용합니다.

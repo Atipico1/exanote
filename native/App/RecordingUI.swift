@@ -611,6 +611,7 @@ struct MemoEditor: View {
             }
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $text)
+                    .disabled(model.store.stoppingForUpdate)
                     .font(.exBody)
                     .scrollContentBackground(.hidden)
                     .padding(8)
@@ -624,6 +625,9 @@ struct MemoEditor: View {
         }
         .onAppear(perform: load)
         .onChange(of: meetingID) { _, _ in load() }
+        .onChange(of: text) { _, value in
+            if loaded == meetingID, value != saved { model.store.stageMemo(meetingID: meetingID, text: value) }
+        }
         .task(id: text) {
             guard loaded == meetingID, text != saved else { return }
             try? await Task.sleep(for: .milliseconds(700))

@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.0</string>
+	<string>0.1.1</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -34,7 +34,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>ExanoteGoogleClientID</key>
 	<string>251531621234-lbp54a575gcjrtr0ppopiivbres41v3k.apps.googleusercontent.com</string>
 	<key>NSAppTransportSecurity</key>
@@ -50,5 +50,15 @@
 	<string>선택한 iCloud Drive나 Google Drive 폴더에 회의 전사와 요약을 저장하고 팀과 공유해요.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>녹음을 시작한 회의에서만 내 목소리를 녹음해요.</string>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://atipico1.github.io/exanote/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>daaF3+9ccPQYQpEcaB0qcpErUuPqHQVGHDTrIEGh62o=</string>
+	<key>SUSendProfileInfo</key>
+	<false/>
 </dict>
 </plist>

@@ -16,6 +16,7 @@
 		29925808C234AFE85C29ECE3 /* MeetingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD40403F233DFC8058E953C /* MeetingsView.swift */; };
 		2A24DCBBF174945A847CB434 /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04213DC0590BF1142776118D /* Folders.swift */; };
 		2A311AB20EF0E42CF62D0328 /* DisplayName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3247EE20D3D127F9509A882D /* DisplayName.swift */; };
+		2D0369F108E363077C3260FE /* AppUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE2C98D765BF76451845FD7 /* AppUpdater.swift */; };
 		38638A4B63A1125FCF77995E /* MeetingActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2768C697EF8E84B373DBC5 /* MeetingActions.swift */; };
 		3E5C499F2744390FFD114290 /* MeetingDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AF671F7CE15EDF9FDCA7DD /* MeetingDetector.swift */; };
 		41BF235EE6B6914854B152BE /* NotionUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6166BED36E93AB4C00D6720E /* NotionUI.swift */; };
@@ -27,6 +28,7 @@
 		7082DCA6A42A6B9B90C3656A /* SystemPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5D17213FF27724FD80B2D5 /* SystemPermissions.swift */; };
 		7EE2D783AB1881D9C74BD5F6 /* AIConnections.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D8573F591A25BD22246B2C /* AIConnections.swift */; };
 		9A8BD3705288D3990B741A29 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C433319BFB72B8CAF48F35BC /* AppModel.swift */; };
+		9BC9BF7465CB5DDCECD81639 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 72BEED57B6FB34F537498E9F /* Sparkle */; };
 		9BDFA5E906D2959DFA5DF44B /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4F38E432C00E1A9C312674 /* Teams.swift */; };
 		A0712F49D45DC5C3B2274735 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1ED0A1A07F9C2562ADCF3D7D /* Assets.xcassets */; };
 		A09814CDD36D155B14BEE3E8 /* LiveNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD69E079C35222C412BF2E0 /* LiveNotesView.swift */; };
@@ -61,6 +63,7 @@
 		6166BED36E93AB4C00D6720E /* NotionUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionUI.swift; sourceTree = "<group>"; };
 		68A4FC3C2305FA1990A90C83 /* UpcomingMeetings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingMeetings.swift; sourceTree = "<group>"; };
 		6EF84C7AC6BEBD7187B4CAF7 /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
+		6FE2C98D765BF76451845FD7 /* AppUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdater.swift; sourceTree = "<group>"; };
 		7B597966626C0FD1AF08FCD6 /* Insights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insights.swift; sourceTree = "<group>"; };
 		7BD40403F233DFC8058E953C /* MeetingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingsView.swift; sourceTree = "<group>"; };
 		7E9419F9210CD820375B4114 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -81,6 +84,17 @@
 		F0AF671F7CE15EDF9FDCA7DD /* MeetingDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetector.swift; sourceTree = "<group>"; };
 		F602A862FE6E2ACA9532F8DF /* GoogleAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAccount.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		37C982EF0B0B565E3B896376 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BC9BF7465CB5DDCECD81639 /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		202876407F69A6B5CDFEA27E /* Products */ = {
@@ -105,6 +119,7 @@
 				D6D8573F591A25BD22246B2C /* AIConnections.swift */,
 				C433319BFB72B8CAF48F35BC /* AppModel.swift */,
 				58623E28A4DE8330B326540D /* AppPaths.swift */,
+				6FE2C98D765BF76451845FD7 /* AppUpdater.swift */,
 				1ED0A1A07F9C2562ADCF3D7D /* Assets.xcassets */,
 				4A76DE056ED4946ABE363586 /* AudioCapture.swift */,
 				AC54A5B906F6F104661159CB /* Brand.swift */,
@@ -151,6 +166,7 @@
 			buildPhases = (
 				111A35A7A386581C5BD11772 /* Sources */,
 				B2F39D82E23820D07176DEEC /* Resources */,
+				37C982EF0B0B565E3B896376 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -158,6 +174,7 @@
 			);
 			name = Exanote;
 			packageProductDependencies = (
+				72BEED57B6FB34F537498E9F /* Sparkle */,
 			);
 			productName = Exanote;
 			productReference = 5CB231071E0F52ED2E10E514 /* Exanote.app */;
@@ -183,6 +200,9 @@
 			);
 			mainGroup = 3F21653F70675F008910BB60;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B7DBAFD8F3D0BEC5450E623A /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 202876407F69A6B5CDFEA27E /* Products */;
 			projectDirPath = "";
@@ -212,6 +232,7 @@
 				7EE2D783AB1881D9C74BD5F6 /* AIConnections.swift in Sources */,
 				9A8BD3705288D3990B741A29 /* AppModel.swift in Sources */,
 				0379170C552366E9D4A12ACE /* AppPaths.swift in Sources */,
+				2D0369F108E363077C3260FE /* AppUpdater.swift in Sources */,
 				6230C87D82694D3CD21D8465 /* AudioCapture.swift in Sources */,
 				54EEA964015B8502EDF36755 /* Brand.swift in Sources */,
 				C13D99E334D65554CA7CE081 /* CoreAudioHAL.swift in Sources */,
@@ -425,6 +446,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B7DBAFD8F3D0BEC5450E623A /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = exactVersion;
+				version = 2.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		72BEED57B6FB34F537498E9F /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B7DBAFD8F3D0BEC5450E623A /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9B49439B52ABEDF45B596A9B /* Project object */;
 }

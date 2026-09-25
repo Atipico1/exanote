@@ -185,7 +185,7 @@ final class AppModel: ObservableObject {
             MainActor.assumeIsolated {
                 self?.permissions.refresh()
                 self?.login.refresh()
-                self?.calendar.reload()
+                self?.calendar.refreshAuthorization()
                 Task { await Notifier.shared.refreshAuthorization() }
             }
         }
@@ -385,6 +385,7 @@ final class AppModel: ObservableObject {
     // MARK: Quit
 
     func shouldTerminate() -> NSApplication.TerminateReply {
+        if AppUpdater.shared.deferTerminationForUpdate() { return .terminateLater }
         guard store.recording else { return .terminateNow }
         let alert = NSAlert()
         alert.messageText = "녹음 중이에요"

@@ -4,9 +4,15 @@ options:
   developmentLanguage: ko
   deploymentTarget:
     macOS: "15.0"
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    exactVersion: 2.10.0
 targets:
   Exanote:
     type: application
+    dependencies:
+      - package: Sparkle
     platform: macOS
     sources:
       - path: native/App
@@ -14,8 +20,13 @@ targets:
       path: native/App/Info.plist
       properties:
         CFBundleDisplayName: Exanote
-        CFBundleShortVersionString: "0.1.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "0.1.1"
+        CFBundleVersion: "2"
+        SUFeedURL: https://atipico1.github.io/exanote/appcast.xml
+        SUPublicEDKey: daaF3+9ccPQYQpEcaB0qcpErUuPqHQVGHDTrIEGh62o=
+        SUEnableAutomaticChecks: true
+        SUAutomaticallyUpdate: false
+        SUSendProfileInfo: false
         CFBundleDevelopmentRegion: ko
         CFBundleLocalizations: [ko]
         NSMicrophoneUsageDescription: 녹음을 시작한 회의에서만 내 목소리를 녹음해요.

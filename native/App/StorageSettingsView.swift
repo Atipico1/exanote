@@ -45,7 +45,7 @@ enum SettingsTab: Int, CaseIterable, Hashable {
     /// Extra words the settings search matches.
     var keywords: String {
         switch self {
-        case .general: "이름 표시 이름 프로필 테마 다크 라이트 화면 온보딩 처음"
+        case .general: "이름 표시 이름 프로필 테마 다크 라이트 화면 온보딩 처음 업데이트 update"
         case .recording: "감지 알림 로그인 자동 종료 단축키 녹음 상태"
         case .permissions: "마이크 시스템 오디오 소리 알림 권한"
         case .calendar: "캘린더 일정 google icloud"
@@ -238,6 +238,8 @@ struct GeneralSettingsView: View {
                 }
             }
 
+            UpdateSettings()
+
             SettingsSection("정보") {
                 SettingsRow(symbol: "info.circle", title: "Exanote \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")",
                             detail: "모든 처리는 이 Mac에서 해요. 오디오와 전사는 호스팅된 AI로 보내지 않아요.")
@@ -263,8 +265,8 @@ struct RecordingSettingsView: View {
                                detail: "Zoom, Teams, Slack, FaceTime이나 브라우저가 마이크를 쓰기 시작하면 알려요. 녹음은 알림을 누를 때만 시작해요.",
                                isOn: $notifyOnDetection)
                 if notifier.authorized == false {
-                    SettingsRow(title: "Exanote 알림이 꺼져 있어요", detail: "시스템 설정에서 알림을 허용해야 받을 수 있어요") {
-                        Button("시스템 설정 열기") { Task { await notifier.requestAuthorization() } }
+                    SettingsRow(title: "알림 권한이 필요해요", detail: "권한 화면에서 알림을 허용하면 회의 시작 알림을 받을 수 있어요") {
+                        Button("권한 설정 보기") { AppModel.shared.nav.route = .settings(.permissions) }
                             .buttonStyle(PillButtonStyle(compact: true))
                     }
                 }
