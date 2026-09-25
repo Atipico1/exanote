@@ -553,7 +553,7 @@ private struct PauseButton: View {
     }
 }
 
-/// A quiet section title in the sidebar, as in Aside: small, gray, not bold.
+/// Section headings share the leading edge of the sidebar row icons.
 private struct SidebarHeader: View {
     let title: String
 
@@ -562,6 +562,7 @@ private struct SidebarHeader: View {
             .font(.sidebar(offset: -5, weight: .medium))
             .foregroundStyle(.secondary)
             .textCase(nil)
+            .padding(.leading, 12)
             .padding(.top, Typography.shared.sidebarSectionGap)
             .padding(.bottom, 2)
     }
