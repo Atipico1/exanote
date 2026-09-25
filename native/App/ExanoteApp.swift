@@ -464,6 +464,7 @@ private struct Sidebar: View {
         .font(.sidebar())
         .environment(\.defaultMinListRowHeight, Typography.shared.sidebarRowHeight)
         .listStyle(.sidebar)
+        .labelStyle(SidebarLabelStyle())
         .scrollContentBackground(.hidden)
         .background(PlainSidebarSelection())
         .onDeleteCommand {
@@ -545,5 +546,15 @@ private struct SidebarHeader: View {
             .textCase(nil)
             .padding(.top, Typography.shared.sidebarSectionGap)
             .padding(.bottom, 2)
+    }
+}
+
+/// Keep symbol and title separate as the user enlarges sidebar text.
+private struct SidebarLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 8) {
+            configuration.icon.frame(width: CGFloat(Typography.shared.sidebarSize) + 2)
+            configuration.title
+        }
     }
 }
