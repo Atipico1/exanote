@@ -460,7 +460,7 @@ private struct Sidebar: View {
         }
         .safeAreaInset(edge: .top, spacing: 0) {
             VStack(alignment: .leading, spacing: 12) {
-                Button(action: find) {
+                Button { nav.route = .meetings; find() } label: {
                     HStack(spacing: 8) {
                         Text("검색").foregroundStyle(.secondary)
                         Spacer()
