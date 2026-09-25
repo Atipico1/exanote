@@ -106,7 +106,7 @@ struct AIConnectionsSection: View {
                 Button("연결") { Task { await store.toggle(client) } }.buttonStyle(PillButtonStyle(kind: .primary, compact: true))
             default:
                 if let url = URL(string: client.install_url) {
-                    Link("설치 안내", destination: url).font(.system(size: 12.5, weight: .medium)).foregroundStyle(Color.brandText)
+                    Link("설치 안내", destination: url).font(.app(size: 12.5, weight: .medium)).foregroundStyle(Color.brandText)
                 }
             }
         }

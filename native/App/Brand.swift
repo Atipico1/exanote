@@ -68,7 +68,7 @@ struct Wordmark: View {
 
     var body: some View {
         (Text("E") + Text("x").foregroundStyle(Color.brandText) + Text("anote"))
-            .font(.system(size: size, weight: .semibold))
+            .font(.app(size: size, weight: .semibold))
             .tracking(size * -0.02)
             .accessibilityLabel("Exanote")
     }
@@ -80,22 +80,22 @@ struct Wordmark: View {
 /// spaces out like a typewriter. Hangul falls back to Apple SD Gothic Neo in every role.
 extension Font {
     /// Page titles: the greeting, 회의, a meeting's title. Use with `.tracking(Font.displayTracking)`.
-    static let exDisplay = Font.system(size: 30, weight: .semibold)
+    static var exDisplay: Font { Font.app(size: 30, weight: .semibold) }
     static let displayTracking: CGFloat = -0.7
     /// Section headers.
-    static let exTitle = Font.system(size: 17, weight: .semibold)
+    static var exTitle: Font { Font.app(size: 17, weight: .semibold) }
     /// Row and card titles.
-    static let exHeadline = Font.system(size: 14, weight: .medium)
+    static var exHeadline: Font { Font.app(size: 14, weight: .medium) }
     /// Notes and transcript text.
-    static let exBody = Font.system(size: 14)
+    static var exBody: Font { Font.app(size: 14) }
     /// Dates and durations that include Hangul: tabular digits.
-    static let exData = Font.system(size: 12.5, weight: .medium).monospacedDigit()
-    static let exDataSmall = Font.system(size: 11).monospacedDigit()
+    static var exData: Font { Font.app(size: 12.5, weight: .medium).monospacedDigit() }
+    static var exDataSmall: Font { Font.app(size: 11).monospacedDigit() }
     /// Pure timecodes, shares and counts: 0:29, 51%, 2/5.
-    static let exTimecode = Font.system(size: 12.5, weight: .medium, design: .monospaced)
-    static let exTimecodeSmall = Font.system(size: 11, design: .monospaced)
+    static var exTimecode: Font { Font.app(size: 12.5, weight: .medium, design: .monospaced) }
+    static var exTimecodeSmall: Font { Font.app(size: 11, design: .monospaced) }
     /// Labels that sit above or beside data: column headers, today's date.
-    static let exEyebrow = Font.system(size: 11.5, weight: .medium)
+    static var exEyebrow: Font { Font.app(size: 11.5, weight: .medium) }
     /// The running recording timer.
-    static let exTimer = Font.system(size: 13, weight: .semibold, design: .monospaced)
+    static var exTimer: Font { Font.app(size: 13, weight: .semibold, design: .monospaced) }
 }

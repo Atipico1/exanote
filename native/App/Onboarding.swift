@@ -37,7 +37,7 @@ struct OnboardingView: View {
                 Spacer()
                 Button("건너뛰기", action: finish)
                     .buttonStyle(.plain)
-                    .font(.system(size: 12.5, weight: .medium))
+                    .font(.app(size: 12.5, weight: .medium))
                     .foregroundStyle(.secondary)
                     .help("처음 설정은 설정 ▸ 일반에서 다시 볼 수 있어요")
             }
@@ -78,7 +78,7 @@ struct OnboardingView: View {
                     .frame(width: item == step ? 22 : 8, height: 6)
             }
             Text("\(step.rawValue + 1) / \(Step.allCases.count)")
-                .font(.system(size: 11.5, weight: .medium).monospacedDigit())
+                .font(.app(size: 11.5, weight: .medium).monospacedDigit())
                 .foregroundStyle(.secondary)
                 .padding(.leading, 6)
         }
@@ -89,9 +89,9 @@ struct OnboardingView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title).font(.system(size: 26, weight: .semibold)).tracking(-0.6)
+            Text(title).font(.app(size: 26, weight: .semibold)).tracking(-0.6)
             Text(message)
-                .font(.system(size: 14))
+                .font(.app(size: 14))
                 .foregroundStyle(.secondary)
                 .lineSpacing(3)
                 .fixedSize(horizontal: false, vertical: true)
@@ -135,7 +135,7 @@ struct OnboardingView: View {
             PermissionsSection(permissions: permissions, title: nil, includeNotifications: false)
             Button("시스템 오디오 허용이 잘 안 되나요?") { SystemPermissions.open("Privacy_ScreenCapture") }
                 .buttonStyle(.plain)
-                .font(.system(size: 12.5))
+                .font(.app(size: 12.5))
                 .foregroundStyle(.secondary)
                 .underline()
                 .frame(maxWidth: .infinity)
@@ -180,7 +180,7 @@ struct OnboardingView: View {
             if step != .connect && !stepDone {
                 Button("나중에 할래요") { go(1) }
                     .buttonStyle(.plain)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.app(size: 13, weight: .medium))
                     .foregroundStyle(.secondary)
                     .padding(.trailing, 6)
             }
@@ -285,7 +285,7 @@ struct SetupChecklist: View {
         VStack(alignment: .leading, spacing: 8) {
             if let error = workspace.overview?.status.error {
                 Button { open(.sync) } label: {
-                    Label { Text("동기화 문제").font(.system(size: 12.5, weight: .medium)) } icon: {
+                    Label { Text("동기화 문제").font(.app(size: 12.5, weight: .medium)) } icon: {
                         Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Color.recording)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -305,10 +305,10 @@ struct SetupChecklist: View {
     private func card(done: Int) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("설정 마무리").font(.system(size: 12.5, weight: .semibold))
-                Text("\(done)/\(items.count)").font(.system(size: 12, weight: .medium).monospacedDigit()).foregroundStyle(.secondary)
+                Text("설정 마무리").font(.app(size: 12.5, weight: .semibold))
+                Text("\(done)/\(items.count)").font(.app(size: 12, weight: .medium).monospacedDigit()).foregroundStyle(.secondary)
                 Spacer()
-                Button { dismissed = true } label: { Label("닫기", systemImage: "xmark").labelStyle(.iconOnly).font(.system(size: 10, weight: .semibold)) }
+                Button { dismissed = true } label: { Label("닫기", systemImage: "xmark").labelStyle(.iconOnly).font(.app(size: 10, weight: .semibold)) }
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
                     .help("닫기. 설정에서 언제든 할 수 있어요")
@@ -331,12 +331,12 @@ struct SetupChecklist: View {
                                 .foregroundStyle(item.done ? Color.secondary : Color.primary)
                             Spacer()
                             if let note = item.note {
-                                Text(note).font(.system(size: 11, weight: .medium).monospacedDigit()).foregroundStyle(.secondary)
+                                Text(note).font(.app(size: 11, weight: .medium).monospacedDigit()).foregroundStyle(.secondary)
                             } else if !item.done {
-                                Image(systemName: "chevron.right").font(.system(size: 9, weight: .semibold)).foregroundStyle(.tertiary)
+                                Image(systemName: "chevron.right").font(.app(size: 9, weight: .semibold)).foregroundStyle(.tertiary)
                             }
                         }
-                        .font(.system(size: 12.5))
+                        .font(.app(size: 12.5))
                         .padding(.vertical, 4)
                         .contentShape(Rectangle())
                     }

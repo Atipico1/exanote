@@ -39,7 +39,7 @@ struct DisplayNameEditor: View {
                     .focused($nameFocused)
                     .onSubmit(save)
                 Text("홈과 사이드바에 표시돼요. 이 Mac에서만 바뀝니다.")
-                    .font(.caption)
+                    .font(.app(size: 11))
                     .foregroundStyle(.secondary)
             }
 

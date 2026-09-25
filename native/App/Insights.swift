@@ -169,7 +169,7 @@ struct SpeakerTimeline: View {
                 }
             }
             .buttonStyle(.borderless)
-            .font(.system(size: 11))
+            .font(.app(size: 11))
             .padding(.bottom, 4)
             ForEach(order, id: \.self) { speaker in
                 let color = TagColor.speaker(speaker, in: order)

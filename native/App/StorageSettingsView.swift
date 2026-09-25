@@ -45,7 +45,7 @@ enum SettingsTab: Int, CaseIterable, Hashable {
     /// Extra words the settings search matches.
     var keywords: String {
         switch self {
-        case .general: "이름 표시 이름 프로필 테마 다크 라이트 화면 온보딩 처음 업데이트 update"
+        case .general: "이름 표시 이름 프로필 테마 다크 라이트 화면 온보딩 처음 업데이트 update 글자 글꼴 폰트 크기 사이드바 font size"
         case .recording: "감지 알림 로그인 자동 종료 단축키 녹음 상태"
         case .permissions: "마이크 시스템 오디오 소리 알림 권한"
         case .calendar: "캘린더 일정 google icloud"
@@ -79,7 +79,7 @@ struct SettingsPage: View {
                 VStack(alignment: .leading, spacing: 28) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(tab.title).font(.exDisplay).tracking(Font.displayTracking)
-                        Text(tab.subtitle).font(.subheadline).foregroundStyle(.secondary)
+                        Text(tab.subtitle).font(.app(size: 12)).foregroundStyle(.secondary)
                     }
                     content
                 }
@@ -123,7 +123,7 @@ private struct SettingsNav: View {
                 TextField("설정 검색", text: $query).textFieldStyle(.plain)
                     .onSubmit { if let first = matches.first { select(first) } }
             }
-            .font(.system(size: 13))
+            .font(.app(size: 13))
             .padding(.horizontal, 10)
             .frame(height: 30)
             .background(Color.raised, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
@@ -135,7 +135,7 @@ private struct SettingsNav: View {
                         if !tabs.isEmpty {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(group.title)
-                                    .font(.system(size: 11.5, weight: .medium))
+                                    .font(.app(size: 11.5, weight: .medium))
                                     .foregroundStyle(.secondary)
                                     .padding(.horizontal, 10)
                                     .padding(.bottom, 4)
@@ -144,7 +144,7 @@ private struct SettingsNav: View {
                         }
                     }
                     if matches.isEmpty {
-                        Text("일치하는 설정이 없어요").font(.system(size: 12.5)).foregroundStyle(.secondary).padding(.horizontal, 10)
+                        Text("일치하는 설정이 없어요").font(.app(size: 12.5)).foregroundStyle(.secondary).padding(.horizontal, 10)
                     }
                 }
             }
@@ -165,14 +165,14 @@ private struct SettingsNav: View {
         return Button { select(item) } label: {
             HStack(spacing: 9) {
                 Image(systemName: item.symbol)
-                    .font(.system(size: 13.5, weight: selected ? .semibold : .regular))
+                    .font(.app(size: 13.5, weight: selected ? .semibold : .regular))
                     .frame(width: 18)
                     .foregroundStyle(selected ? Color.primary : Color.secondary)
-                Text(item.title).font(.system(size: 13.5, weight: selected ? .semibold : .regular))
+                Text(item.title).font(.app(size: 13.5, weight: selected ? .semibold : .regular))
                 Spacer(minLength: 4)
                 if let badge = badge(item) {
                     Text(badge)
-                        .font(.system(size: 10.5, weight: .semibold))
+                        .font(.app(size: 10.5, weight: .semibold))
                         .foregroundStyle(Color.recording)
                         .padding(.horizontal, 6)
                         .frame(height: 18)
@@ -238,6 +238,8 @@ struct GeneralSettingsView: View {
                 }
             }
 
+            TypographySettings()
+
             UpdateSettings()
 
             SettingsSection("정보") {
@@ -253,7 +255,6 @@ struct GeneralSettingsView: View {
 struct RecordingSettingsView: View {
     @ObservedObject var login: LoginItem
     @ObservedObject private var notifier = Notifier.shared
-    @AppStorage(RecordingPrefs.notifyOnDetection) private var notifyOnDetection = true
     @AppStorage(RecordingPrefs.showPill) private var showPill = true
     @AppStorage(RecordingPrefs.autoStopAfterCall) private var autoStop = true
 
@@ -261,15 +262,6 @@ struct RecordingSettingsView: View {
         VStack(alignment: .leading, spacing: 28) {
             SettingsSection("회의 감지") {
                 LoginItemRow(login: login)
-                SettingsToggle(symbol: "bell.badge", title: "회의가 시작되면 알림 보내기",
-                               detail: "Zoom, Teams, Slack, FaceTime이나 브라우저가 마이크를 쓰기 시작하면 알려요. 녹음은 알림을 누를 때만 시작해요.",
-                               isOn: $notifyOnDetection)
-                if notifier.authorized == false {
-                    SettingsRow(title: "알림 권한이 필요해요", detail: "권한 화면에서 알림을 허용하면 회의 시작 알림을 받을 수 있어요") {
-                        Button("권한 설정 보기") { AppModel.shared.nav.route = .settings(.permissions) }
-                            .buttonStyle(PillButtonStyle(compact: true))
-                    }
-                }
             }
 
             SettingsSection("녹음하는 동안") {
@@ -309,6 +301,7 @@ struct PermissionsSection: View {
     @ObservedObject private var notifier = Notifier.shared
     var title: String? = "녹음"
     var includeNotifications = true
+    @AppStorage(RecordingPrefs.notifyOnDetection) private var notifyOnDetection = true
 
     var body: some View {
         SettingsSection(title) {
@@ -328,6 +321,9 @@ struct PermissionsSection: View {
                         })
                     }
                 }
+                SettingsToggle(symbol: "bell.badge", title: "회의가 시작되면 알림 보내기",
+                               detail: "회의 앱이 마이크를 쓰기 시작하면 알려요. 녹음은 알림을 누를 때만 시작해요.",
+                               isOn: $notifyOnDetection)
             }
         }
         .task { await permissions.watch() }
@@ -442,7 +438,7 @@ struct SyncLocationSection: View {
         return Button { Task { await workspace.choose(path.isEmpty ? nil : path) } } label: {
             SettingsRow(symbol: symbol, title: title, detail: detail) {
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 17))
+                    .font(.app(size: 17))
                     .foregroundStyle(selected ? Color.brandText : Color.secondary.opacity(0.5))
             }
             .contentShape(Rectangle())

@@ -42,7 +42,7 @@ struct PillButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .labelStyle(.titleAndIcon)
-            .font(.system(size: compact ? 12 : 13, weight: .semibold))
+            .font(.app(size: compact ? 12 : 13, weight: .semibold))
             .lineLimit(1)
             .padding(.horizontal, compact ? 11 : 15)
             .frame(height: compact ? 28 : 34)
@@ -79,7 +79,7 @@ struct IconCircle: View {
 
     var body: some View {
         Image(systemName: symbol)
-            .font(.system(size: size * 0.4, weight: .medium))
+            .font(.app(size: size * 0.4, weight: .medium))
             .foregroundStyle(tint)
             .frame(width: size, height: size)
             .background(Color.raised, in: Circle())
@@ -114,9 +114,9 @@ struct EmptyState<Action: View>: View {
     var body: some View {
         VStack(spacing: 10) {
             IconCircle(symbol: symbol, size: 44)
-            Text(title).font(.system(size: 15, weight: .semibold)).padding(.top, 4)
+            Text(title).font(.app(size: 15, weight: .semibold)).padding(.top, 4)
             Text(message)
-                .font(.subheadline)
+                .font(.app(size: 12))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 420)
@@ -144,7 +144,7 @@ struct ViewAllButton: View {
             }
         }
         .buttonStyle(.plain)
-        .font(.subheadline)
+        .font(.app(size: 12))
         .foregroundStyle(.secondary)
     }
 }
@@ -160,7 +160,7 @@ struct PillTabs: View {
                 let selected = selection == index
                 Button { selection = index } label: {
                     Text(options[index])
-                        .font(.system(size: 13, weight: selected ? .semibold : .regular))
+                        .font(.app(size: 13, weight: selected ? .semibold : .regular))
                         .foregroundStyle(selected ? Color.primary : Color.secondary)
                         .padding(.horizontal, 14)
                         .frame(height: 30)
@@ -197,7 +197,7 @@ struct SearchField: View {
                     .help("지우기")
             }
         }
-        .font(.system(size: 13))
+        .font(.app(size: 13))
         .padding(.horizontal, 14)
         .frame(height: 36)
         .background(Color.surface, in: Capsule())
@@ -252,7 +252,7 @@ struct NotesText: View {
         } else if line.hasPrefix("#") {
             let level = line.prefix { $0 == "#" }.count
             Text(inline(String(line.dropFirst(level))))
-                .font(.system(size: level <= 1 ? 20 : level == 2 ? 16 : 14, weight: .semibold))
+                .font(.app(size: level <= 1 ? 20 : level == 2 ? 16 : 14, weight: .semibold))
                 .padding(.top, 12)
         } else if line.hasPrefix("- [ ]") || line.lowercased().hasPrefix("- [x]") {
             HStack(alignment: .firstTextBaseline, spacing: 9) {

@@ -41,10 +41,10 @@ struct Tag: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            if let symbol { Image(systemName: symbol).font(.system(size: 10, weight: .semibold)).accessibilityHidden(true) }
+            if let symbol { Image(systemName: symbol).font(.app(size: 10, weight: .semibold)).accessibilityHidden(true) }
             Text(text).lineLimit(1)
         }
-        .font(.system(size: 12.5))
+        .font(.app(size: 12.5))
         .foregroundStyle(color.text)
         .padding(.horizontal, 6)
         .frame(height: 21)
@@ -69,7 +69,7 @@ struct PropertyRow<Value: View>: View {
             .frame(width: 132, alignment: .leading)
             value.frame(maxWidth: .infinity, alignment: .leading)
         }
-        .font(.system(size: 13.5))
+        .font(.app(size: 13.5))
         .frame(minHeight: 32)
         .accessibilityElement(children: .combine)
     }
@@ -91,7 +91,7 @@ struct Block<Content: View>: View {
 struct BlockTitle: View {
     let text: String
     var body: some View {
-        Text(text).font(.system(size: 12.5, weight: .medium)).foregroundStyle(.secondary)
+        Text(text).font(.app(size: 12.5, weight: .medium)).foregroundStyle(.secondary)
     }
 }
 

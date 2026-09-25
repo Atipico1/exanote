@@ -27,6 +27,7 @@
 		6854FB7DB16608EE5CD7F061 /* StorageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA292807FFF3D8A8F96EC4AA /* StorageSettingsView.swift */; };
 		7082DCA6A42A6B9B90C3656A /* SystemPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5D17213FF27724FD80B2D5 /* SystemPermissions.swift */; };
 		7EE2D783AB1881D9C74BD5F6 /* AIConnections.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D8573F591A25BD22246B2C /* AIConnections.swift */; };
+		8F0F606C7098400F8451DF26 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEE307D1B792ADB5217B1E2 /* Typography.swift */; };
 		9A8BD3705288D3990B741A29 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C433319BFB72B8CAF48F35BC /* AppModel.swift */; };
 		9BC9BF7465CB5DDCECD81639 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 72BEED57B6FB34F537498E9F /* Sparkle */; };
 		9BDFA5E906D2959DFA5DF44B /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4F38E432C00E1A9C312674 /* Teams.swift */; };
@@ -79,6 +80,7 @@
 		C433319BFB72B8CAF48F35BC /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		D6D8573F591A25BD22246B2C /* AIConnections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConnections.swift; sourceTree = "<group>"; };
 		DAB066843EC4C537F0138636 /* RecordingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingMode.swift; sourceTree = "<group>"; };
+		DCEE307D1B792ADB5217B1E2 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 		E2EAAA29A76F60D85AB41E4B /* WorkspaceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceStore.swift; sourceTree = "<group>"; };
 		E9A024029184E39E600751ED /* RecordingPermissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingPermissions.swift; sourceTree = "<group>"; };
 		F0AF671F7CE15EDF9FDCA7DD /* MeetingDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetector.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				1E5D17213FF27724FD80B2D5 /* SystemPermissions.swift */,
 				AC4F38E432C00E1A9C312674 /* Teams.swift */,
 				7E9419F9210CD820375B4114 /* Theme.swift */,
+				DCEE307D1B792ADB5217B1E2 /* Typography.swift */,
 				68A4FC3C2305FA1990A90C83 /* UpcomingMeetings.swift */,
 				E2EAAA29A76F60D85AB41E4B /* WorkspaceStore.swift */,
 			);
@@ -261,6 +264,7 @@
 				7082DCA6A42A6B9B90C3656A /* SystemPermissions.swift in Sources */,
 				9BDFA5E906D2959DFA5DF44B /* Teams.swift in Sources */,
 				DAFBD80996868CFC2871EBDA /* Theme.swift in Sources */,
+				8F0F606C7098400F8451DF26 /* Typography.swift in Sources */,
 				F3CC2333635AAE5137FC8D78 /* UpcomingMeetings.swift in Sources */,
 				FD5353985BA133F3677D2003 /* WorkspaceStore.swift in Sources */,
 			);

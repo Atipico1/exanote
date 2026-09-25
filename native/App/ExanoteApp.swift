@@ -86,7 +86,7 @@ struct ExanoteApp: App {
         Window("Exanote", id: "main") {
             NavigationSplitView {
                 Sidebar(store: store, workspace: workspace, nav: nav, folders: model.folders, items: items, sharedName: sharedName, find: find)
-                    .navigationSplitViewColumnWidth(min: 252, ideal: 272, max: 340)
+                    .navigationSplitViewColumnWidth(min: 252, ideal: 300, max: 400)
             } detail: {
                 detail
                     .navigationTitle(windowTitle)
@@ -357,11 +357,11 @@ private struct Sidebar: View {
         case "recording":
             Circle().fill(Color.recording).frame(width: 7, height: 7).accessibilityLabel("녹음 중")
         case "queued", "processing":
-            Text("처리 중").font(.system(size: 12)).foregroundStyle(.tertiary)
+            Text("처리 중").font(.sidebar(offset: -2)).foregroundStyle(.tertiary)
         case "error":
-            Image(systemName: "exclamationmark.circle").font(.system(size: 12)).foregroundStyle(Color.recording).accessibilityLabel("오류")
+            Image(systemName: "exclamationmark.circle").font(.sidebar(offset: -2)).foregroundStyle(Color.recording).accessibilityLabel("오류")
         default:
-            Text(relativeDay(item.date)).font(.system(size: 12)).foregroundStyle(.tertiary)
+            Text(relativeDay(item.date)).font(.sidebar(offset: -2)).foregroundStyle(.tertiary)
         }
     }
 
@@ -383,7 +383,7 @@ private struct Sidebar: View {
                 HStack {
                     Label { Text("검색") } icon: { Image(systemName: "magnifyingglass").foregroundStyle(.secondary) }
                     Spacer()
-                    Text("⌘F").font(.system(size: 12)).foregroundStyle(.tertiary)
+                    Text("⌘F").font(.sidebar(offset: -2)).foregroundStyle(.tertiary)
                 }
                 .contentShape(Rectangle())
             }
@@ -419,7 +419,7 @@ private struct Sidebar: View {
                                 Image(systemName: scope.symbol).foregroundStyle(.secondary)
                             }
                             Spacer()
-                            Text("\(items.filter(scope.contains).count)").font(.system(size: 12.5).monospacedDigit()).foregroundStyle(.tertiary)
+                            Text("\(items.filter(scope.contains).count)").font(.sidebar(offset: -2).monospacedDigit()).foregroundStyle(.tertiary)
                         }
                         .sidebarRow(.space(scope), selected: nav.route)
                     }
@@ -434,7 +434,7 @@ private struct Sidebar: View {
                     HStack {
                         Label { Text(folder.name).lineLimit(1) } icon: { Image(systemName: "folder").foregroundStyle(.secondary) }
                         Spacer()
-                        Text("\(folders.count(folder, among: ids))").font(.system(size: 12.5).monospacedDigit()).foregroundStyle(.tertiary)
+                        Text("\(folders.count(folder, among: ids))").font(.sidebar(offset: -2).monospacedDigit()).foregroundStyle(.tertiary)
                     }
                     .sidebarRow(.folder(folder.id), selected: nav.route)
                     // Drop a meeting from the sidebar or the meetings page to file it.
@@ -458,8 +458,8 @@ private struct Sidebar: View {
                 SidebarHeader(title: "폴더")
             }
         }
-        .font(.system(size: 14))
-        .environment(\.defaultMinListRowHeight, 32)
+        .font(.sidebar())
+        .environment(\.defaultMinListRowHeight, CGFloat(Typography.shared.sidebarSize) + 20)
         .listStyle(.sidebar)
         .scrollContentBackground(.hidden)
         .background(PlainSidebarSelection())
@@ -485,13 +485,13 @@ private struct Sidebar: View {
                     Button { editingDisplayName = true } label: {
                         HStack(spacing: 10) {
                             Text(String(displayName.prefix(1)))
-                                .font(.system(size: 12, weight: .bold))
+                                .font(.app(size: 12, weight: .bold))
                                 .foregroundStyle(.secondary)
                                 .frame(width: 26, height: 26)
                                 // Neutral, so a lime letter in a lime shape stays the logo's alone.
                                 .background(Color.raised, in: Circle())
                                 .accessibilityHidden(true)
-                            Text(displayName).font(.system(size: 14, weight: .medium)).lineLimit(1)
+                            Text(displayName).font(.sidebar(weight: .medium)).lineLimit(1)
                         }
                         .contentShape(Rectangle())
                     }
@@ -537,7 +537,7 @@ private struct SidebarHeader: View {
 
     var body: some View {
         Text(title)
-            .font(.system(size: 12.5, weight: .medium))
+            .font(.sidebar(offset: -2, weight: .medium))
             .foregroundStyle(.secondary)
             .textCase(nil)
     }

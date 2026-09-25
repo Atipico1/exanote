@@ -101,12 +101,12 @@ struct RecordingPill: View {
             HStack(spacing: 10) {
                 RecordingDot(paused: session.paused)
                 Text(clock(Double(session.elapsed)))
-                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                    .font(.app(size: 14, weight: .semibold, design: .monospaced))
                     .foregroundStyle(.white)
                     .fixedSize()
                 LevelBars(levels: session.levels, paused: session.paused, compact: true)
                 status
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.app(size: 12, weight: .medium))
                     .lineLimit(1)
                 Spacer(minLength: 2)
                 if store.recordingMode == .liveTranslation {
@@ -124,7 +124,7 @@ struct RecordingPill: View {
                     model.showMain(route: session.meetingID.map { .local($0) })
                 }
                 Button { model.stopMeeting() } label: {
-                    Text("종료").font(.system(size: 12, weight: .semibold)).foregroundStyle(.white)
+                    Text("종료").font(.app(size: 12, weight: .semibold)).foregroundStyle(.white)
                         .padding(.horizontal, 12).frame(height: 28)
                         .background(Color.recording, in: Capsule())
                 }
@@ -145,11 +145,11 @@ struct RecordingPill: View {
                 .frame(maxHeight: .infinity)
                 HStack {
                     Text("발화별 임시 기록 · 화면 공유에도 보일 수 있어요")
-                        .font(.system(size: 10.5)).foregroundStyle(.white.opacity(0.55))
+                        .font(.app(size: 10.5)).foregroundStyle(.white.opacity(0.55))
                     Spacer()
                     Button("전체 보기") { model.showMain(route: session.meetingID.map { .local($0) }) }
                         .buttonStyle(.plain)
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.app(size: 11, weight: .medium))
                         .foregroundStyle(Color.brandFill)
                 }
                 .padding(.horizontal, 16)
@@ -201,7 +201,7 @@ private struct PillIconButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 12, weight: .semibold))
+                .font(.app(size: 12, weight: .semibold))
                 .foregroundStyle(.white.opacity(isEnabled ? 0.9 : 0.35))
                 .frame(width: 28, height: 28)
                 .background(Color.white.opacity(0.1), in: Circle())
@@ -219,7 +219,7 @@ struct RecordingDot: View {
     var body: some View {
         Group {
             if paused {
-                Image(systemName: "pause.circle.fill").font(.system(size: 13)).foregroundStyle(Color.orange)
+                Image(systemName: "pause.circle.fill").font(.app(size: 13)).foregroundStyle(Color.orange)
             } else {
                 Circle().fill(Color.recording).frame(width: 9, height: 9)
                     .opacity(dim ? 0.35 : 1)
@@ -271,7 +271,7 @@ struct LevelBars: View {
 
     private func row(_ title: String, symbol: String, level: Double) -> some View {
         HStack(spacing: 10) {
-            Label(title, systemImage: symbol).font(.caption).foregroundStyle(.secondary).frame(width: 84, alignment: .leading)
+            Label(title, systemImage: symbol).font(.app(size: 11)).foregroundStyle(.secondary).frame(width: 84, alignment: .leading)
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule().fill(Color.raised)
@@ -334,7 +334,7 @@ struct MenuBarContent: View {
                 }
             }
             if let error = store.error {
-                Label(error, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(Color.recording).lineLimit(3)
+                Label(error, systemImage: "exclamationmark.triangle").font(.app(size: 11)).foregroundStyle(Color.recording).lineLimit(3)
             }
             Divider()
             HStack(spacing: 14) {
@@ -344,7 +344,7 @@ struct MenuBarContent: View {
                 Button("종료") { NSApp.terminate(nil) }
             }
             .buttonStyle(.plain)
-            .font(.system(size: 12.5, weight: .medium))
+            .font(.app(size: 12.5, weight: .medium))
             .foregroundStyle(.secondary)
         }
         .padding(16)
@@ -356,22 +356,22 @@ struct MenuBarContent: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 RecordingDot(paused: session.paused)
-                Text(session.paused ? "일시정지됨" : "녹음 중").font(.system(size: 13, weight: .semibold))
+                Text(session.paused ? "일시정지됨" : "녹음 중").font(.app(size: 13, weight: .semibold))
                 Spacer()
-                Text(clock(Double(session.elapsed))).font(.system(size: 20, weight: .semibold, design: .monospaced))
+                Text(clock(Double(session.elapsed))).font(.app(size: 20, weight: .semibold, design: .monospaced))
             }
             if let title = store.meetings.first(where: { $0.id == session.meetingID })?.title {
-                Text(title).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                Text(title).font(.app(size: 11)).foregroundStyle(.secondary).lineLimit(1)
             }
             LevelBars(levels: session.levels, paused: session.paused)
             if session.callEnded {
                 HStack {
-                    Text("통화가 끝난 것 같아요").font(.caption).foregroundStyle(Color.orange)
+                    Text("통화가 끝난 것 같아요").font(.app(size: 11)).foregroundStyle(Color.orange)
                     Spacer()
                     Button("계속 녹음") { model.keepRecording() }.buttonStyle(PillButtonStyle(compact: true))
                 }
             } else if session.noInput {
-                Text("소리가 들어오지 않아요. 입력 장치와 시스템 오디오 녹음 권한을 확인하세요.").font(.caption).foregroundStyle(Color.orange)
+                Text("소리가 들어오지 않아요. 입력 장치와 시스템 오디오 녹음 권한을 확인하세요.").font(.app(size: 11)).foregroundStyle(Color.orange)
             }
             HStack(spacing: 8) {
                 Button { model.togglePause() } label: {
@@ -392,9 +392,9 @@ struct MenuBarContent: View {
     private var idle: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let signal = detector.active {
-                Label("\(signal.name)에서 통화 중이에요", systemImage: "waveform").font(.system(size: 13, weight: .semibold))
+                Label("\(signal.name)에서 통화 중이에요", systemImage: "waveform").font(.app(size: 13, weight: .semibold))
             } else {
-                Text("Exanote").font(.system(size: 13, weight: .semibold))
+                Text("Exanote").font(.app(size: 13, weight: .semibold))
             }
             Button { model.startMeeting() } label: {
                 Label("녹음 시작", systemImage: "record.circle").frame(maxWidth: .infinity)
@@ -404,9 +404,9 @@ struct MenuBarContent: View {
             if let next = calendar.meetings.first(where: { $0.start.timeIntervalSinceNow < 3600 }) {
                 HStack(spacing: 8) {
                     VStack(alignment: .leading, spacing: 1) {
-                        Text(next.title).font(.system(size: 12.5, weight: .medium)).lineLimit(1)
+                        Text(next.title).font(.app(size: 12.5, weight: .medium)).lineLimit(1)
                         Text(next.start <= .now ? "진행 중" : next.start.formatted(date: .omitted, time: .shortened))
-                            .font(.caption).foregroundStyle(.secondary)
+                            .font(.app(size: 11)).foregroundStyle(.secondary)
                     }
                     Spacer()
                     Button("이 일정 녹음") { model.startMeeting(next.title) }
@@ -426,14 +426,14 @@ struct ProcessingRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
-                Text(meeting.title).font(.system(size: 12.5, weight: .medium)).lineLimit(1)
+                Text(meeting.title).font(.app(size: 12.5, weight: .medium)).lineLimit(1)
                 Spacer()
                 if let progress = meeting.progress {
                     Text("\(Int(progress.fraction * 100))%").font(.exDataSmall).foregroundStyle(.secondary)
                 }
             }
             ProgressView(value: meeting.progress?.fraction ?? 0).progressViewStyle(.linear).controlSize(.small)
-            Text(processingLine(meeting)).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            Text(processingLine(meeting)).font(.app(size: 11)).foregroundStyle(.secondary).lineLimit(1)
         }
     }
 }
@@ -460,7 +460,7 @@ struct ProcessingStatusView: View {
     var body: some View {
         VStack(spacing: 12) {
             IconCircle(symbol: "waveform", size: 44)
-            Text("전사와 요약을 만들고 있어요").font(.system(size: 15, weight: .semibold))
+            Text("전사와 요약을 만들고 있어요").font(.app(size: 15, weight: .semibold))
             VStack(alignment: .leading, spacing: 6) {
                 ProgressView(value: meeting.progress?.fraction ?? 0).progressViewStyle(.linear)
                 HStack {
@@ -468,12 +468,12 @@ struct ProcessingStatusView: View {
                     Spacer()
                     if let progress = meeting.progress { Text("\(Int(progress.fraction * 100))%").font(.exData) }
                 }
-                .font(.subheadline)
+                .font(.app(size: 12))
                 .foregroundStyle(.secondary)
             }
             .frame(maxWidth: 420)
             Text("모두 이 Mac에서 처리해요. 창을 닫거나 앱을 종료해도 계속 진행되고, 끝나면 알림으로 알려 드려요.")
-                .font(.caption)
+                .font(.app(size: 11))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 420)
@@ -496,11 +496,11 @@ struct RecordingPage: View {
         VStack(alignment: .leading, spacing: 22) {
             HStack(alignment: .center, spacing: 14) {
                 RecordingDot(paused: session.paused)
-                Text(clock(Double(session.elapsed))).font(.system(size: 34, weight: .semibold, design: .monospaced))
+                Text(clock(Double(session.elapsed))).font(.app(size: 34, weight: .semibold, design: .monospaced))
                 Tag(text: session.paused ? "일시정지됨" : "녹음 중", color: session.paused ? .yellow : .red)
                 Tag(text: store.recordingMode == .liveTranslation ? "실시간 번역 켜짐" : "녹음 중",
                     color: store.recordingMode == .liveTranslation ? .blue : .gray)
-                if let flash = session.flash { Text(flash).font(.caption).foregroundStyle(Color.brandText) }
+                if let flash = session.flash { Text(flash).font(.app(size: 11)).foregroundStyle(Color.brandText) }
                 Spacer(minLength: 12)
                 if store.recordingMode == .liveTranslation {
                     Button { model.toggleLiveOverlay() } label: {
@@ -537,7 +537,7 @@ struct RecordingPage: View {
                         .accessibilityIdentifier("enableLiveTranslation")
                 }
                 if let liveError = store.liveError {
-                    Text(liveError).font(.caption).foregroundStyle(.red)
+                    Text(liveError).font(.app(size: 11)).foregroundStyle(.red)
                 }
             }
             MemoEditor(model: model, meetingID: meeting.id, initial: meeting.memo ?? "",
@@ -581,7 +581,7 @@ struct Callout<Actions: View>: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: symbol).foregroundStyle(tint.text).accessibilityHidden(true)
-            Text(text).font(.system(size: 13)).fixedSize(horizontal: false, vertical: true)
+            Text(text).font(.app(size: 13)).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 8)
             actions
         }
@@ -606,7 +606,7 @@ struct MemoEditor: View {
                 Text("내 메모").font(.exTitle)
                 Spacer()
                 if loaded != nil, text != saved {
-                    Text("저장 중…").font(.caption).foregroundStyle(.tertiary)
+                    Text("저장 중…").font(.app(size: 11)).foregroundStyle(.tertiary)
                 }
             }
             ZStack(alignment: .topLeading) {
@@ -663,7 +663,7 @@ struct BookmarkList: View {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(Array(bookmarks.enumerated()), id: \.offset) { index, mark in
                         HStack(spacing: 10) {
-                            Image(systemName: "flag.fill").font(.caption).foregroundStyle(TagColor.orange.text).accessibilityHidden(true)
+                            Image(systemName: "flag.fill").font(.app(size: 11)).foregroundStyle(TagColor.orange.text).accessibilityHidden(true)
                             if let seek {
                                 Button(clock(mark.time)) { seek(mark.time) }.buttonStyle(.plain).font(.exTimecode).foregroundStyle(Color.brandText)
                                     .help("여기부터 재생")
@@ -673,7 +673,7 @@ struct BookmarkList: View {
                             if !mark.note.isEmpty { Text(mark.note).font(.exBody) }
                             Spacer()
                             if let delete {
-                                Button { delete(index) } label: { Image(systemName: "xmark").font(.caption) }
+                                Button { delete(index) } label: { Image(systemName: "xmark").font(.app(size: 11)) }
                                     .buttonStyle(.plain).foregroundStyle(.tertiary).help("북마크 삭제")
                             }
                         }

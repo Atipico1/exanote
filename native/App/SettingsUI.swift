@@ -17,7 +17,7 @@ struct SettingsSection<Content: View>: View {
         VStack(alignment: .leading, spacing: 8) {
             if let title {
                 Text(title)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.app(size: 13, weight: .medium))
                     .foregroundStyle(.secondary)
                     .padding(.leading, 4)
             }
@@ -33,14 +33,14 @@ struct SettingsSection<Content: View>: View {
                                 .frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
                         }
                     }
-                    .font(.system(size: 13.5))
+                    .font(.app(size: 13.5))
                     .background(Color.surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.hairline))
                 }
             }
             if let footer {
                 Text(footer)
-                    .font(.system(size: 12))
+                    .font(.app(size: 12))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 4)
@@ -61,10 +61,10 @@ struct SettingsRow<Trailing: View>: View {
         HStack(spacing: 12) {
             if let symbol { IconWell(symbol: symbol) }
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 13.5, weight: .medium))
+                Text(title).font(.app(size: 13.5, weight: .medium))
                 if let detail {
                     Text(detail)
-                        .font(.system(size: 12))
+                        .font(.app(size: 12))
                         .foregroundStyle(detailColor)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -101,7 +101,7 @@ struct IconWell: View {
 
     var body: some View {
         Image(systemName: symbol)
-            .font(.system(size: 14, weight: .medium))
+            .font(.app(size: 14, weight: .medium))
             .foregroundStyle(tint.opacity(0.8))
             .frame(width: 30, height: 30)
             .background(Color.raised, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
@@ -124,7 +124,7 @@ struct SetupState: View {
         switch kind {
         case .done(let text):
             Label(text, systemImage: "checkmark.circle.fill")
-                .font(.system(size: 12.5, weight: .semibold))
+                .font(.app(size: 12.5, weight: .semibold))
                 .foregroundStyle(Color.success)
         case .action(let title, let action):
             Button(title, action: action).buttonStyle(PillButtonStyle(kind: .secondary, compact: true))
@@ -141,7 +141,7 @@ struct SetupState: View {
                 ProgressView().controlSize(.small)
             }
         case .note(let text):
-            Text(text).font(.system(size: 12)).foregroundStyle(.secondary)
+            Text(text).font(.app(size: 12)).foregroundStyle(.secondary)
         }
     }
 }
@@ -151,7 +151,7 @@ struct ErrorLine: View {
 
     var body: some View {
         Label(text, systemImage: "exclamationmark.triangle.fill")
-            .font(.system(size: 12.5))
+            .font(.app(size: 12.5))
             .foregroundStyle(Color.recording)
             .fixedSize(horizontal: false, vertical: true)
     }

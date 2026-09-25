@@ -16,7 +16,7 @@ struct LiveNotesView: View {
             HStack(spacing: 9) {
                 Image(systemName: "note.text").foregroundStyle(compact ? Color.brandFill : Color.brandText)
                     .accessibilityHidden(true)
-                Text("실시간 노트").font(compact ? .system(size: 13, weight: .semibold) : .exTitle)
+                Text("실시간 노트").font(compact ? .app(size: 13, weight: .semibold) : .exTitle)
                 Spacer(minLength: 4)
                 if !compact { Tag(text: "영어 → 한국어", color: .blue) }
                 Text("임시 기록").font(.exDataSmall).foregroundStyle(.secondary)
@@ -63,19 +63,19 @@ struct LiveNotesView: View {
         VStack(alignment: .leading, spacing: compact ? 4 : 6) {
             HStack(spacing: 7) {
                 Text(time).font(.exTimecodeSmall).foregroundStyle(.tertiary)
-                Text(speaker).font(.system(size: 11, weight: .semibold))
+                Text(speaker).font(.app(size: 11, weight: .semibold))
                     .foregroundStyle(compact ? Color.brandFill : Color.brandText)
                 if provisional { Text("작성 중").font(.exDataSmall).foregroundStyle(.tertiary) }
             }
             if let translation, !translation.isEmpty {
-                Text(translation).font(compact ? .system(size: 12.5, weight: .medium) : .exBody.weight(.medium))
+                Text(translation).font(compact ? .app(size: 12.5, weight: .medium) : .exBody.weight(.medium))
                     .fixedSize(horizontal: false, vertical: true)
                     .textSelection(.enabled)
             } else {
                 Text(listening ? "말이 끝나면 번역해요" : "번역 중…")
                     .font(.exDataSmall).foregroundStyle(.secondary)
             }
-            Text(original).font(compact ? .system(size: 11) : .exDataSmall)
+            Text(original).font(compact ? .app(size: 11) : .exDataSmall)
                 .foregroundStyle(.secondary)
                 .lineLimit(compact ? 2 : nil)
                 .textSelection(.enabled)

@@ -299,7 +299,7 @@ struct MoreMenu<Items: View>: View {
         Menu { items } label: {
             Label("더 보기", systemImage: "ellipsis")
                 .labelStyle(.iconOnly)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.app(size: 13, weight: .semibold))
                 .frame(width: 28, height: 28)
                 .contentShape(Rectangle())
         }
@@ -449,7 +449,7 @@ struct TranscriptView: View {
             .frame(width: 40, alignment: .leading)
             .overlay(alignment: .leading) {
                 if marked {
-                    Image(systemName: "flag.fill").font(.system(size: 9)).foregroundStyle(TagColor.orange.solid)
+                    Image(systemName: "flag.fill").font(.app(size: 9)).foregroundStyle(TagColor.orange.solid)
                         .offset(x: -14).help("북마크").accessibilityLabel("북마크")
                 }
             }
@@ -493,7 +493,7 @@ struct LocalMeetingView: View {
         PageContainer(maxWidth: 1120) {
             if let error = store.error {
                 Label(error, systemImage: "exclamationmark.triangle")
-                    .font(.subheadline)
+                    .font(.app(size: 12))
                     .foregroundStyle(Color.recording)
                     .textSelection(.enabled)
             }

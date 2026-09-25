@@ -144,13 +144,13 @@ struct MeetingListRow: View {
         HStack(spacing: 12) {
             if let checked {
                 Image(systemName: checked ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 15))
+                    .font(.app(size: 15))
                     .foregroundStyle(checked ? Color.brandText : Color.secondary.opacity(0.6))
                     .frame(width: 20)
                     .accessibilityLabel(checked ? "선택됨" : "선택 안 됨")
             } else {
                 Image(systemName: item.status == "recording" ? "record.circle" : item.symbol)
-                    .font(.system(size: 13))
+                    .font(.app(size: 13))
                     .foregroundStyle(item.status == "recording" ? Color.recording : Color.secondary)
                     .frame(width: 20)
                     .accessibilityHidden(true)
@@ -161,7 +161,7 @@ struct MeetingListRow: View {
                     if item.demo { Tag(text: "예시") }
                     if let folderName {
                         Label(folderName, systemImage: "folder")
-                            .font(.system(size: 11.5))
+                            .font(.app(size: 11.5))
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
@@ -172,7 +172,7 @@ struct MeetingListRow: View {
                     }
                 }
                 if let snippet {
-                    Text(snippet).font(.system(size: 12)).foregroundStyle(.secondary).lineLimit(1)
+                    Text(snippet).font(.app(size: 12)).foregroundStyle(.secondary).lineLimit(1)
                 }
             }
             Spacer(minLength: 16)
@@ -246,7 +246,7 @@ struct MeetingList: View {
                 switch entry {
                 case .heading(let title):
                     Text(title)
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.app(size: 12, weight: .semibold))
                         .foregroundStyle(.secondary)
                         .padding(.leading, 10)
                         .padding(.top, 14)
@@ -326,20 +326,20 @@ struct MeetingsView: View {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 10) {
                     if folder != nil {
-                        Image(systemName: "folder").font(.system(size: 24, weight: .medium)).foregroundStyle(.secondary)
+                        Image(systemName: "folder").font(.app(size: 24, weight: .medium)).foregroundStyle(.secondary)
                     }
                     Text(title).font(.exDisplay).tracking(Font.displayTracking)
                 }
-                Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                Text(subtitle).font(.app(size: 12)).foregroundStyle(.secondary)
                 if let folder, !folders.rules(for: folder).isEmpty {
                     HStack(spacing: 6) {
-                        Text("자동으로 넣는 반복 일정").font(.system(size: 12)).foregroundStyle(.secondary)
+                        Text("자동으로 넣는 반복 일정").font(.app(size: 12)).foregroundStyle(.secondary)
                         ForEach(folders.rules(for: folder), id: \.series_id) { rule in
                             HStack(spacing: 4) {
-                                Image(systemName: "arrow.triangle.2.circlepath").font(.system(size: 10))
-                                Text(rule.title).font(.system(size: 12, weight: .medium))
+                                Image(systemName: "arrow.triangle.2.circlepath").font(.app(size: 10))
+                                Text(rule.title).font(.app(size: 12, weight: .medium))
                                 Button { Task { await folders.forget(rule) } } label: {
-                                    Image(systemName: "xmark").font(.system(size: 9, weight: .bold))
+                                    Image(systemName: "xmark").font(.app(size: 9, weight: .bold))
                                 }
                                 .buttonStyle(.plain)
                                 .foregroundStyle(.secondary)
@@ -397,12 +397,12 @@ struct MeetingsView: View {
 
     private func selectionBar(_ chosen: Set<String>) -> some View {
         HStack(spacing: 12) {
-            Text(chosen.isEmpty ? "옮길 회의를 고르세요" : "\(chosen.count)개 선택됨").font(.system(size: 13, weight: .medium))
+            Text(chosen.isEmpty ? "옮길 회의를 고르세요" : "\(chosen.count)개 선택됨").font(.app(size: 13, weight: .medium))
             Button(chosen.count == filtered.count ? "선택 해제" : "모두 선택") {
                 selection = chosen.count == filtered.count ? [] : Set(filtered.map(\.id))
             }
             .buttonStyle(.plain)
-            .font(.system(size: 12.5))
+            .font(.app(size: 12.5))
             .foregroundStyle(Color.brandText)
             Spacer()
             Menu {

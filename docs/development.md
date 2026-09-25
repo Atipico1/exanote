@@ -68,3 +68,7 @@ Exanote 메뉴에서 수동으로 업데이트를 확인합니다. 녹음·처�
 - GitHub Release에 DMG·ZIP·체크섬을 먼저 게시하고, GitHub Pages의 `appcast.xml`을 마지막에 갱신합니다.
 - Xcode 계정으로 공증할 때는 Organizer의 Direct Distribution을 사용하고 승인 후 Export Notarized App으로 내보냅니다.
   CLI 경로는 `scripts/notarize_app.sh`와 별도로 등록한 키체인 프로필을 사용합니다.
+
+## 글자 표시 설정
+
+일반 설정의 글자 섹션에서 설치된 글꼴, 본문 크기(12–20pt), 사이드바 크기(13–22pt)를 조절합니다. 기본값은 시스템 글꼴, 본문 14pt, 사이드바 16pt입니다. 변경사항은 즉시 반영되고 앱을 다시 실행해도 유지됩니다. 회의 시작 알림 사용 여부와 macOS 알림 권한은 권한 화면에서 함께 관리합니다.

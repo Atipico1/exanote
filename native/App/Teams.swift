@@ -246,19 +246,19 @@ struct TeamSection: View {
             }
             if !account.configured {
                 Text("이 빌드에는 Google 로그인이 설정되지 않았어요. 공유 드라이브를 저장 위치로 고르면 팀과 나눌 수 있어요.")
-                    .font(.callout).foregroundStyle(.secondary)
+                    .font(.app(size: 13)).foregroundStyle(.secondary)
             } else if let profile = account.profile {
                 SettingsRow(symbol: "person.crop.circle", title: "Google 계정", detail: profile.email) {
                     Button("로그아웃") { Task { await account.signOut() } }
                 }
                 if workspace.googleDriveInstalled && !driveAccounts.contains(profile.email) {
                     Label("Google Drive 데스크톱에도 \(profile.email)로 로그인해야 팀 폴더가 이 Mac에 동기화돼요.", systemImage: "exclamationmark.triangle")
-                        .font(.callout).foregroundStyle(.secondary)
+                        .font(.app(size: 13)).foregroundStyle(.secondary)
                 }
                 ForEach(teamOptions) { team in teamRow(team, me: profile.email) }
                 if teams.awaitedFolderID != nil {
                     Label("Google Drive가 팀 폴더를 내려받는 중이에요…", systemImage: "arrow.triangle.2.circlepath")
-                        .font(.callout).foregroundStyle(.secondary)
+                        .font(.app(size: 13)).foregroundStyle(.secondary)
                 }
                 HStack {
                     TextField("새 팀", text: $newTeam, prompt: Text("팀 이름"))
@@ -281,12 +281,12 @@ struct TeamSection: View {
                     }
                 }
                 Text("로그인하면 팀 폴더를 만들고 팀원을 이메일로 초대할 수 있어요. Exanote는 자신이 만든 폴더와 파일에만 접근해요.")
-                    .font(.callout).foregroundStyle(.secondary)
+                    .font(.app(size: 13)).foregroundStyle(.secondary)
             }
             if let message = teams.error ?? account.error {
-                Label(message, systemImage: "exclamationmark.triangle.fill").foregroundStyle(Color.recording).font(.callout)
+                Label(message, systemImage: "exclamationmark.triangle.fill").foregroundStyle(Color.recording).font(.app(size: 13))
             } else if let notice = teams.notice {
-                Text(notice).font(.callout).foregroundStyle(.secondary)
+                Text(notice).font(.app(size: 13)).foregroundStyle(.secondary)
             }
         }
         .onChange(of: teamOptions) { _, options in adoptAwaitedTeam(options) }
@@ -325,7 +325,7 @@ struct TeamSection: View {
                             Button("내보내기") { removal = (member, team) }.buttonStyle(.link)
                         }
                     }
-                    .font(.callout)
+                    .font(.app(size: 13))
                 }
                 HStack {
                     TextField("초대", text: Binding(get: { invitee[team.path] ?? "" }, set: { invitee[team.path] = $0 }), prompt: Text("초대할 이메일"))
@@ -334,7 +334,7 @@ struct TeamSection: View {
                     Button("초대", action: { invite(team) }).disabled((invitee[team.path] ?? "").isEmpty || teams.busy)
                 }
             } else {
-                Text("팀원 초대와 관리는 팀을 만든 \(team.owner ?? "사람")이 해요.").font(.callout).foregroundStyle(.secondary)
+                Text("팀원 초대와 관리는 팀을 만든 \(team.owner ?? "사람")이 해요.").font(.app(size: 13)).foregroundStyle(.secondary)
             }
             if let folderID = team.folder_id {
                 HStack {
@@ -352,7 +352,7 @@ struct TeamSection: View {
                 Label(team.name, systemImage: "person.3")
                 Spacer()
                 if selected {
-                    Label("저장 위치", systemImage: "checkmark.circle.fill").foregroundStyle(Color.success).font(.callout)
+                    Label("저장 위치", systemImage: "checkmark.circle.fill").foregroundStyle(Color.success).font(.app(size: 13))
                 } else {
                     Button("이 팀에 저장") { Task { await workspace.choose(team.path) } }
                 }

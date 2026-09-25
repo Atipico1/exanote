@@ -21,20 +21,20 @@ struct HomeView: View {
                 Text(welcome)
                     .font(.exDisplay).tracking(Font.displayTracking)
                 Text("새 회의를 녹음하거나 지난 기록을 열어보세요.")
-                    .font(.subheadline).foregroundStyle(.secondary)
+                    .font(.app(size: 12)).foregroundStyle(.secondary)
             }
 
             if let signal = detector.active, !meetings.recording, dismissedSignal != signal.name {
                 // A Notion-style callout: the one tinted block, because it asks for an action now.
                 HStack(spacing: 12) {
                     Image(systemName: "waveform")
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.app(size: 15, weight: .semibold))
                         .foregroundStyle(TagColor.blue.text)
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("\(signal.name)에서 통화 중이에요").font(.system(size: 14, weight: .semibold))
+                        Text("\(signal.name)에서 통화 중이에요").font(.app(size: 14, weight: .semibold))
                         Text("녹음을 시작한 뒤 화면에서 실시간 번역을 켤 수 있어요.")
-                            .font(.caption)
+                            .font(.app(size: 11))
                             .foregroundStyle(.secondary)
                     }
                     Spacer(minLength: 12)
@@ -87,7 +87,7 @@ struct HomeView: View {
 
             if let error = meetings.error {
                 Label(error, systemImage: "exclamationmark.triangle")
-                    .font(.subheadline)
+                    .font(.app(size: 12))
                     .foregroundStyle(Color.recording)
                     .textSelection(.enabled)
             }
@@ -159,7 +159,7 @@ struct InlineNote<Action: View>: View {
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: symbol).foregroundStyle(.tertiary).frame(width: 20).accessibilityHidden(true)
-            Text(text).font(.system(size: 13.5)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+            Text(text).font(.app(size: 13.5)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 12)
             action
         }
