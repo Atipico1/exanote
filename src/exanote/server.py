@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from .pipeline import process_recording
-from .live import LiveMeeting, shared_translator
+from .live import LiveMeeting
 from . import models
 from . import folders
 from .integrations import router as integrations_router
@@ -49,10 +49,10 @@ threading.Thread(target=models.adopt_from_hf_cache_once, name="adopt-models", da
 jobs = ThreadPoolExecutor(max_workers=1)
 live_jobs = ThreadPoolExecutor(max_workers=1, thread_name_prefix="live-audio")
 live_meetings: dict[str, LiveMeeting] = {}
-# Prepare translation while the user opens the app. It has its own serial MLX
-# thread. Do not start a model download merely by opening the app.
-if models.BY_ID["notes"].installed or os.getenv(models.BY_ID["notes"].override):
-    shared_translator()
+live_cleanup_pending: set[str] = set()
+# A live session and the post-recording pipeline must not load their models
+# together. The live session holds this until its last translation is saved.
+inference_lock = threading.Lock()
 recording: str | None = None
 processing: str | None = None  # The meeting whose models are loaded right now.
 waiting: list[str] = []  # Meetings submitted to jobs and not started yet, in order.
@@ -144,6 +144,11 @@ def _compress_recording(meeting_id: str) -> None:
 
 
 def _process(meeting_id: str) -> None:
+    with inference_lock:
+        _process_exclusive(meeting_id)
+
+
+def _process_exclusive(meeting_id: str) -> None:
     global processing
     with lock:
         if meeting_id in waiting:
@@ -259,7 +264,7 @@ def status():
     with lock:
         current = {"id": recording} if recording else None
         busy = processing
-    return {"recording": current, "processing": busy, "local": True, "protocol_version": 2}
+    return {"recording": current, "processing": busy, "local": True, "protocol_version": 3}
 
 
 @app.get("/api/meetings")
@@ -291,6 +296,45 @@ def audio(meeting_id: str):
     return FileResponse(_folder(meeting_id) / meta["filename"])
 
 
+def _archived_live(meeting_id: str) -> dict:
+    path = _folder(meeting_id) / "live.json"
+    if not path.is_file():
+        raise HTTPException(404, "Live session not found")
+    return json.loads(path.read_text())
+
+
+def _forget_live(meeting_id: str, session: LiveMeeting) -> None:
+    live_cleanup_pending.discard(meeting_id)
+    if live_meetings.get(meeting_id) is session:
+        del live_meetings[meeting_id]
+        inference_lock.release()
+
+
+def _schedule_live_cleanup(meeting_id: str, session: LiveMeeting, loop: asyncio.AbstractEventLoop) -> None:
+    if meeting_id not in live_cleanup_pending:
+        live_cleanup_pending.add(meeting_id)
+        session.translation_done.add_done_callback(
+            lambda _: loop.call_soon_threadsafe(_forget_live, meeting_id, session))
+
+
+async def _complete_live(meeting_id: str) -> dict:
+    session = live_meetings.get(meeting_id)
+    if session is None:
+        return _archived_live(meeting_id)
+    loop = asyncio.get_running_loop()
+    try:
+        snapshot = await loop.run_in_executor(live_jobs, session.finish)
+    except Exception:
+        try:
+            await loop.run_in_executor(live_jobs, session.abort)
+            _schedule_live_cleanup(meeting_id, session, loop)
+        except Exception:
+            _forget_live(meeting_id, session)
+        raise
+    _schedule_live_cleanup(meeting_id, session, loop)
+    return snapshot
+
+
 @app.post("/api/live/{meeting_id}/start")
 async def start_live(meeting_id: str, offset_seconds: float = 0):
     if _read(meeting_id).get("status") != "recording":
@@ -298,9 +342,15 @@ async def start_live(meeting_id: str, offset_seconds: float = 0):
     if not 0 <= offset_seconds < 86_400:
         raise HTTPException(400, "Invalid recording offset")
     if meeting_id not in live_meetings:
+        if not inference_lock.acquire(blocking=False):
+            raise HTTPException(409, "다른 회의를 처리 중이에요. 완료되면 실시간 번역을 켜 주세요.")
         loop = asyncio.get_running_loop()
-        live_meetings[meeting_id] = await loop.run_in_executor(
-            live_jobs, LiveMeeting, meeting_id, _folder(meeting_id) / "live.json", offset_seconds)
+        try:
+            live_meetings[meeting_id] = await loop.run_in_executor(
+                live_jobs, LiveMeeting, meeting_id, _folder(meeting_id) / "live.json", offset_seconds)
+        except BaseException:
+            inference_lock.release()
+            raise
     return live_meetings[meeting_id].snapshot()
 
 
@@ -337,18 +387,14 @@ async def live_chunk(meeting_id: str, request: Request, sample_rate: int = 16_00
 async def live_status(meeting_id: str):
     session = live_meetings.get(meeting_id)
     if session is None:
-        raise HTTPException(404, "Live session not found")
+        return _archived_live(meeting_id)
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(live_jobs, session.snapshot)
 
 
 @app.post("/api/live/{meeting_id}/finish")
 async def finish_live(meeting_id: str):
-    session = live_meetings.get(meeting_id)
-    if session is None:
-        raise HTTPException(404, "Live session not found")
-    loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(live_jobs, session.finish)
+    return await _complete_live(meeting_id)
 
 
 @app.post("/api/import")
@@ -394,7 +440,7 @@ def start_recording(start: RecordStart | None = None):
 
 
 @app.post("/api/record/stop")
-def stop_recording(meeting_id: str | None = None):
+async def stop_recording(meeting_id: str | None = None):
     """meeting_id lets the app finish its recording even if this worker restarted meanwhile."""
     global recording
     with lock:
@@ -404,17 +450,21 @@ def stop_recording(meeting_id: str | None = None):
             raise HTTPException(409, "No recording is in progress")
     if _read(meeting_id).get("status") != "recording":
         raise HTTPException(409, "No recording is in progress")
+    if meeting_id in live_meetings:
+        await _complete_live(meeting_id)
     return _finish_recording(meeting_id)
 
 
 @app.post("/api/record/recover")
-def recover_recording():
+async def recover_recording():
     """The app started and found a recording its previous run never stopped (it crashed or quit)."""
     global recording
     with lock:
         meeting_id, recording = recording, None
     if meeting_id is None:
         return {"recovered": None}
+    if meeting_id in live_meetings:
+        await _complete_live(meeting_id)
     meta = _read(meeting_id)
     if not _audio_recorded(meeting_id, meta):
         shutil.rmtree(_folder(meeting_id), ignore_errors=True)
@@ -423,13 +473,15 @@ def recover_recording():
 
 
 @app.post("/api/record/cancel")
-def cancel_recording():
+async def cancel_recording():
     global recording
     with lock:
         if not recording:
             raise HTTPException(409, "No recording is in progress")
         meeting_id = recording
         recording = None
+    if meeting_id in live_meetings:
+        await _complete_live(meeting_id)
     meta = _read(meeting_id)
     audio = _folder(meeting_id) / meta["filename"]
     if not audio.exists() or audio.stat().st_size == 0:
@@ -487,7 +539,7 @@ def delete_bookmark(meeting_id: str, index: int):
 
 def _busy() -> bool:
     with lock:
-        return processing is not None or recording is not None
+        return processing is not None or recording is not None or bool(waiting) or inference_lock.locked()
 
 
 def _catalog_model(model_id: str) -> models.Model:

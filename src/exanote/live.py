@@ -6,8 +6,7 @@ import threading
 import time
 import re
 import json
-from concurrent.futures import ThreadPoolExecutor
-from functools import lru_cache
+from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -16,14 +15,14 @@ from mlx_qwen3_asr import Session
 from . import models
 from .diarization import NemotronMLX, SPEAKERS
 from .live_diarization import LiveDiarizer
-from .pipeline import _model, _notes_generator
+from .pipeline import _model, _notes_generator, release_models
 
 
 _translation_jobs = ThreadPoolExecutor(max_workers=1, thread_name_prefix="live-translate")
 
 
 class LiveTranslator:
-    """Keep the translation model warm without blocking incoming audio."""
+    """Load translation only for an active live session, off the audio thread."""
 
     def __init__(self):
         self.generator = None
@@ -53,10 +52,9 @@ class LiveTranslator:
             min(240, max(48, len(text) * 2)),
         ).strip()
 
-
-@lru_cache(maxsize=1)
-def shared_translator() -> LiveTranslator:
-    return LiveTranslator()
+    def close(self) -> None:
+        self.generator = None
+        self.ready = False
 
 
 class LiveMeeting:
@@ -73,7 +71,7 @@ class LiveMeeting:
         # stay short enough to keep up with live capture on this Mac.
         self.asr_state = self.asr.init_streaming(language="English", chunk_size_sec=2.0, max_context_sec=8.0)
         self.diarizer = LiveDiarizer(NemotronMLX(models.ensure("diarization") / "model.safetensors"))
-        self.translator = shared_translator()
+        self.translator = LiveTranslator()
         self.audio = np.empty((0, 2), dtype=np.float32)
         self.resample_remainder = np.empty((0, 2), dtype=np.float32)
         self.audio_start = 0.0
@@ -93,6 +91,7 @@ class LiveMeeting:
         self.finished = False
         self.error: str | None = None
         self.next_sequence = 0
+        self.translation_done: Future | None = None
 
     def set_offset(self, seconds: float) -> dict:
         if self.duration or self.finished:
@@ -159,7 +158,25 @@ class LiveMeeting:
             self.asr_state = None
             self.diarizer = None
             self.audio = np.empty((0, 2), dtype=np.float32)
+            # This runs after every queued translation, then lets the server
+            # start its normal post-recording models without keeping live weights.
+            self.translation_done = _translation_jobs.submit(self._release_after_finish)
         return self.snapshot()
+
+    def _release_after_finish(self) -> None:
+        self.translator.close()
+        release_models()
+
+    def abort(self) -> None:
+        """Free the models if finalizing a live session fails."""
+        if self.translation_done is not None:
+            return
+        self.finished = True
+        self.asr = None
+        self.asr_state = None
+        self.diarizer = None
+        self.audio = np.empty((0, 2), dtype=np.float32)
+        self.translation_done = _translation_jobs.submit(self._release_after_finish)
 
     @staticmethod
     def _translation_key(text: str) -> str:

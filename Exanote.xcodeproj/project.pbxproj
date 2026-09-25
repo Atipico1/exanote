@@ -31,7 +31,6 @@
 		A0712F49D45DC5C3B2274735 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1ED0A1A07F9C2562ADCF3D7D /* Assets.xcassets */; };
 		A09814CDD36D155B14BEE3E8 /* LiveNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD69E079C35222C412BF2E0 /* LiveNotesView.swift */; };
 		AB12872EF1CB47580EBC3AA7 /* RecordingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB066843EC4C537F0138636 /* RecordingMode.swift */; };
-		ACEC9E0E73BC8ACEC5A74F38 /* live-demo.wav in Resources */ = {isa = PBXBuildFile; fileRef = FE4BEC46F4DFEEF4A71B59C4 /* live-demo.wav */; };
 		B266C4C7532B75D22AA3996E /* SettingsUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ACA253CBDD993EE9D19D3E /* SettingsUI.swift */; };
 		BD554D24CF7823BA583E21FB /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF84C7AC6BEBD7187B4CAF7 /* Onboarding.swift */; };
 		C13D99E334D65554CA7CE081 /* CoreAudioHAL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526219079DD65918D1AD993C /* CoreAudioHAL.swift */; };
@@ -81,7 +80,6 @@
 		E9A024029184E39E600751ED /* RecordingPermissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingPermissions.swift; sourceTree = "<group>"; };
 		F0AF671F7CE15EDF9FDCA7DD /* MeetingDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetector.swift; sourceTree = "<group>"; };
 		F602A862FE6E2ACA9532F8DF /* GoogleAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAccount.swift; sourceTree = "<group>"; };
-		FE4BEC46F4DFEEF4A71B59C4 /* live-demo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "live-demo.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -91,14 +89,6 @@
 				5CB231071E0F52ED2E10E514 /* Exanote.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		20549B4D2E09A114B662F963 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				FE4BEC46F4DFEEF4A71B59C4 /* live-demo.wav */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		3F21653F70675F008910BB60 = {
@@ -147,7 +137,6 @@
 				7E9419F9210CD820375B4114 /* Theme.swift */,
 				68A4FC3C2305FA1990A90C83 /* UpcomingMeetings.swift */,
 				E2EAAA29A76F60D85AB41E4B /* WorkspaceStore.swift */,
-				20549B4D2E09A114B662F963 /* Resources */,
 			);
 			name = App;
 			path = native/App;
@@ -210,7 +199,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0712F49D45DC5C3B2274735 /* Assets.xcassets in Resources */,
-				ACEC9E0E73BC8ACEC5A74F38 /* live-demo.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

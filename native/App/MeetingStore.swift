@@ -168,7 +168,7 @@ final class MeetingStore: ObservableObject {
         started = true
         do {
             if let status = try? await fetchStatus() {
-                if status.protocol_version != 2 {
+                if status.protocol_version != 3 {
                     try await replaceOutdatedWorker()
                 }
             } else {
