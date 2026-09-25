@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/brand/exanote-hero.jpg" alt="Exanote에서 회의를 녹음하고 화자별 전사와 실시간 번역을 보는 화면">
+  <img src="docs/brand/exanote-hero.jpg" alt="Exanote 로고와 주간 제품 회의의 회의 노트 및 화자별 전사 화면">
 </p>
 
 <p align="center">
