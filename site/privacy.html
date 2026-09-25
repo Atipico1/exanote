@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>개인정보처리방침 · Exanote</title>
+<link rel="icon" href="/icon.png">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+<header><img src="/icon.png" alt=""><a href="/">e<b>x</b>anote</a></header>
+<h1>개인정보처리방침</h1>
+<p class="lead">시행일: 2026년 9월 25일 · <a href="#en">English</a></p>
+
+<h2>1. 요약</h2>
+<p>Exanote(이하 "앱")는 회의 오디오와 그 결과물을 사용자의 Mac에서 처리합니다. 개발자는 사용자 데이터를 받는 서버를 운영하지 않으며, 사용자의 오디오, 전사, 요약, Google 계정 정보를 수집하거나 판매하지 않습니다.</p>
+
+<h2>2. Mac에서 처리하는 정보</h2>
+<ul>
+<li><strong>오디오와 회의 결과물:</strong> 사용자가 녹음을 시작한 회의의 오디오, 전사, 화자 구분, 요약은 <code>~/.local/share/exanote</code>에 저장되고 이 Mac에서만 처리됩니다.</li>
+<li><strong>AI 모델:</strong> 처음 사용할 때 Hugging Face에서 모델 파일을 내려받습니다. 이때 회의 내용은 전송되지 않습니다.</li>
+<li><strong>캘린더:</strong> 사용자가 허용한 경우 macOS 캘린더의 일정을 읽어 다가올 회의를 보여 줍니다. 일정은 Mac 밖으로 보내지 않습니다.</li>
+</ul>
+
+<h2>3. 동기화 폴더</h2>
+<p>사용자가 동기화 위치를 고르면 앱은 전사와 요약 텍스트를 그 폴더(iCloud Drive 또는 Google Drive 데스크톱 폴더)에 파일로 저장합니다. 오디오는 복사하지 않습니다. 파일을 옮기는 일은 Apple 또는 Google의 동기화 앱이 하며, 해당 서비스의 약관과 정책이 적용됩니다. 팀 폴더를 고르면 그 폴더에 접근 권한이 있는 팀원이 회의 텍스트를 볼 수 있습니다. Google Drive 데스크톱의 계정 폴더를 선택하면 macOS가 앱과 앱의 작업 프로세스에 그 폴더에 대한 파일 접근을 허용합니다. 앱은 동기화 위치를 찾기 위해 폴더 이름을 확인하고, Exanote 팀 설정 파일과 회의 파일을 읽습니다.</p>
+
+<h2>4. Google 계정 로그인과 Google 사용자 데이터</h2>
+<p>팀 기능을 쓰려고 Google로 로그인하면 앱은 다음 권한을 요청합니다.</p>
+<ul>
+<li><code>openid</code>, <code>email</code>, <code>profile</code>: 로그인한 계정의 이메일 주소와 이름을 앱 설정 화면에 표시하고, 팀을 만든 사람을 기록하는 데 사용합니다.</li>
+<li><code>https://www.googleapis.com/auth/drive.file</code>: 앱이 만든 파일과 폴더에만 접근하는 권한입니다. 팀 폴더와 그 안의 <code>exanote-team.json</code> 파일을 만들고, 사용자가 입력한 이메일 주소로 팀 폴더를 공유하고, 팀원 목록을 보여 주고, 사용자가 요청하면 팀원의 접근 권한을 없애거나 내 드라이브에 팀 폴더 바로가기를 만드는 데 사용합니다.</li>
+</ul>
+<p>이 <code>drive.file</code> 범위는 Google API 권한에 관한 것입니다. 위에서 설명한 Mac의 폴더 접근은 별도로 허용합니다. 앱은 다른 Drive 파일의 내용을 읽거나 수정하지 않습니다. Google 액세스 토큰은 메모리에만 있고, 새로 고침 토큰은 사용자의 Mac 키체인에만 저장되며 개발자나 제3자에게 전송되지 않습니다. Google API 요청은 사용자의 Mac에서 Google로 직접 전송됩니다.</p>
+<p>Exanote가 Google API로부터 받은 정보를 사용하고 다른 앱으로 전송하는 방식은 제한적 사용 요구사항을 포함한 <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API 서비스 사용자 데이터 정책</a>을 준수합니다. Google 사용자 데이터는 위에 적은 사용자 기능에만 쓰이며, 광고, 판매, 신용 평가, AI 모델 학습에 사용하지 않고 사람이 열람하지 않습니다.</p>
+
+<h2>5. AI 도구 연결</h2>
+<p>사용자가 Claude Code, Codex 같은 AI 도구를 연결하면 해당 도구가 이 Mac의 회의 노트를 읽을 수 있습니다. 사용자가 AI 도구에 보여 준 내용은 그 AI 서비스로 전송되며, 해당 서비스의 정책이 적용됩니다.</p>
+
+<h2>6. 수집하지 않는 정보</h2>
+<p>앱에는 분석 도구, 광고, 추적 기능이 없습니다. 개발자는 사용 기록이나 기기 정보를 수집하지 않습니다.</p>
+
+<h2>7. 삭제와 권한 철회</h2>
+<ul>
+<li>앱에서 회의를 삭제하면 로컬 폴더가 macOS 휴지통으로 이동하고, 동기화 폴더에 있는 본인 사본도 지워집니다.</li>
+<li>설정 ▸ 팀에서 로그아웃하면 Google 토큰을 철회하고 키체인에서 지웁니다. <a href="https://myaccount.google.com/permissions">Google 계정의 서드파티 액세스</a>에서도 언제든 권한을 철회할 수 있습니다.</li>
+<li>Google Drive의 팀 폴더와 파일은 사용자의 Drive에 있으므로 Drive에서 직접 지울 수 있습니다.</li>
+</ul>
+
+<h2>8. 문의</h2>
+<p>개인정보 관련 문의: <a href="mailto:athjk3@gmail.com">athjk3@gmail.com</a>. 이 방침이 바뀌면 이 페이지의 시행일을 고칩니다.</p>
+
+<h2 id="en">Privacy Policy (English)</h2>
+<p><strong>Effective September 25, 2026.</strong> Exanote processes meeting audio and its results on the user's Mac. The developer runs no server that receives user data and does not collect or sell audio, transcripts, summaries or Google account information.</p>
+<p><strong>On the Mac.</strong> Recordings, transcripts, speaker labels and summaries are stored in <code>~/.local/share/exanote</code> and processed locally. AI model files are downloaded from Hugging Face on first use; no meeting content is sent. Calendar events, if allowed, are read from macOS Calendar and stay on the Mac.</p>
+<p><strong>Sync folders.</strong> If the user chooses a sync location, transcript and summary text (never audio) is written as files into that iCloud Drive or Google Drive for desktop folder. Apple's or Google's sync client moves the files under their own terms. Teammates with access to a chosen team folder can read the meeting text in it. Selecting a Google Drive for desktop account folder gives the app and its worker local file access to that folder. The app checks folder names to find sync locations and reads Exanote team settings and meeting files there.</p>
+<p><strong>Google sign-in.</strong> For team features the app requests <code>openid</code>, <code>email</code> and <code>profile</code> (to show the signed-in account and record who created a team) and <code>https://www.googleapis.com/auth/drive.file</code>, which only covers files and folders the app creates through the Google API. The app uses it to create a team folder and its <code>exanote-team.json</code>, share that folder with email addresses the user enters, list its members, remove a member when the user asks, and add a shortcut to a team folder in My Drive. The local folder access described above is separate from this API scope. The app does not read the contents of or change other Drive files. Access tokens stay in memory; the refresh token is stored only in the Mac's Keychain and is never sent to the developer or third parties. Google API requests go directly from the Mac to Google.</p>
+<p>Exanote's use and transfer to any other app of information received from Google APIs will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements. Google user data is used only for the user-facing features above; it is not used for advertising, sold, used for credit decisions or to train AI models, and is not read by humans.</p>
+<p><strong>AI tools.</strong> If the user connects AI tools such as Claude Code or Codex, those tools can read the meeting notes on the Mac, and anything the user shows them is sent to that AI service under its own policy.</p>
+<p><strong>No analytics.</strong> The app contains no analytics, advertising or tracking.</p>
+<p><strong>Deletion and revocation.</strong> Deleting a meeting moves its local folder to the macOS Trash and removes the user's own copy from the sync folder. Signing out in Settings ▸ 팀 revokes the Google token and deletes it from the Keychain; access can also be revoked at <a href="https://myaccount.google.com/permissions">Google Account third-party access</a>. Team folders live in the user's Google Drive and can be deleted there.</p>
+<p><strong>Contact:</strong> <a href="mailto:athjk3@gmail.com">athjk3@gmail.com</a>.</p>
+<footer><a href="/">Exanote</a><a href="/privacy">개인정보처리방침 · Privacy</a><a href="mailto:athjk3@gmail.com">athjk3@gmail.com</a></footer>
+</main>
+</body>
+</html>

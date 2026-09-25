@@ -1,0 +1,442 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0379170C552366E9D4A12ACE /* AppPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58623E28A4DE8330B326540D /* AppPaths.swift */; };
+		0E9CED3E1B7C5500AAEA5587 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF68388F0D3E9C572940B22 /* HomeView.swift */; };
+		1DAF42AD950BF30757F5782B /* ModelSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BF7A5A359A4830DC06BEF8 /* ModelSettingsView.swift */; };
+		2261CD58B60F1D4621F05D36 /* LiveTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96384D0A43F47D01EBCBEC03 /* LiveTranscriptView.swift */; };
+		239CB6EA40547D2AD2B2C45A /* RecordingPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A024029184E39E600751ED /* RecordingPermissions.swift */; };
+		28B210E9A7AE2CE364316E59 /* RecordingUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0908701CD35846D46A0FCDC4 /* RecordingUI.swift */; };
+		29925808C234AFE85C29ECE3 /* MeetingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD40403F233DFC8058E953C /* MeetingsView.swift */; };
+		2A24DCBBF174945A847CB434 /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04213DC0590BF1142776118D /* Folders.swift */; };
+		2A311AB20EF0E42CF62D0328 /* DisplayName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3247EE20D3D127F9509A882D /* DisplayName.swift */; };
+		38638A4B63A1125FCF77995E /* MeetingActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2768C697EF8E84B373DBC5 /* MeetingActions.swift */; };
+		3E5C499F2744390FFD114290 /* MeetingDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AF671F7CE15EDF9FDCA7DD /* MeetingDetector.swift */; };
+		41BF235EE6B6914854B152BE /* NotionUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6166BED36E93AB4C00D6720E /* NotionUI.swift */; };
+		49DFFBACA32FF6132AFCC205 /* MeetingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20901958F3A550FBF5FA409 /* MeetingDetailView.swift */; };
+		54EEA964015B8502EDF36755 /* Brand.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC54A5B906F6F104661159CB /* Brand.swift */; };
+		59DF8627320FECF8D8D8E0BD /* MeetingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C5E617F842CE9F3BC1EA9D /* MeetingStore.swift */; };
+		6230C87D82694D3CD21D8465 /* AudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A76DE056ED4946ABE363586 /* AudioCapture.swift */; };
+		6854FB7DB16608EE5CD7F061 /* StorageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA292807FFF3D8A8F96EC4AA /* StorageSettingsView.swift */; };
+		7082DCA6A42A6B9B90C3656A /* SystemPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5D17213FF27724FD80B2D5 /* SystemPermissions.swift */; };
+		7EE2D783AB1881D9C74BD5F6 /* AIConnections.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D8573F591A25BD22246B2C /* AIConnections.swift */; };
+		9A8BD3705288D3990B741A29 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C433319BFB72B8CAF48F35BC /* AppModel.swift */; };
+		9BDFA5E906D2959DFA5DF44B /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4F38E432C00E1A9C312674 /* Teams.swift */; };
+		A0712F49D45DC5C3B2274735 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1ED0A1A07F9C2562ADCF3D7D /* Assets.xcassets */; };
+		A09814CDD36D155B14BEE3E8 /* LiveNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD69E079C35222C412BF2E0 /* LiveNotesView.swift */; };
+		AB12872EF1CB47580EBC3AA7 /* RecordingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB066843EC4C537F0138636 /* RecordingMode.swift */; };
+		ACEC9E0E73BC8ACEC5A74F38 /* live-demo.wav in Resources */ = {isa = PBXBuildFile; fileRef = FE4BEC46F4DFEEF4A71B59C4 /* live-demo.wav */; };
+		B266C4C7532B75D22AA3996E /* SettingsUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ACA253CBDD993EE9D19D3E /* SettingsUI.swift */; };
+		BD554D24CF7823BA583E21FB /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF84C7AC6BEBD7187B4CAF7 /* Onboarding.swift */; };
+		C13D99E334D65554CA7CE081 /* CoreAudioHAL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526219079DD65918D1AD993C /* CoreAudioHAL.swift */; };
+		C14A6EB3E9400FA2D727B36E /* LiveAudioSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB799488881C2FAAD6DF605 /* LiveAudioSender.swift */; };
+		C723454CAA3478C4DEF2A5F6 /* ExanoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83494972E5DC5C3ED6D18A8A /* ExanoteApp.swift */; };
+		D1DE5BC6AC8DBCAF21B0E35D /* GoogleAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = F602A862FE6E2ACA9532F8DF /* GoogleAccount.swift */; };
+		D63E1EEE80087F07936B670A /* Insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B597966626C0FD1AF08FCD6 /* Insights.swift */; };
+		DAFBD80996868CFC2871EBDA /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9419F9210CD820375B4114 /* Theme.swift */; };
+		F3CC2333635AAE5137FC8D78 /* UpcomingMeetings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A4FC3C2305FA1990A90C83 /* UpcomingMeetings.swift */; };
+		FD5353985BA133F3677D2003 /* WorkspaceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EAAA29A76F60D85AB41E4B /* WorkspaceStore.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04213DC0590BF1142776118D /* Folders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folders.swift; sourceTree = "<group>"; };
+		0908701CD35846D46A0FCDC4 /* RecordingUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingUI.swift; sourceTree = "<group>"; };
+		0AD69E079C35222C412BF2E0 /* LiveNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveNotesView.swift; sourceTree = "<group>"; };
+		1E5D17213FF27724FD80B2D5 /* SystemPermissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPermissions.swift; sourceTree = "<group>"; };
+		1ED0A1A07F9C2562ADCF3D7D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3247EE20D3D127F9509A882D /* DisplayName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayName.swift; sourceTree = "<group>"; };
+		36ACA253CBDD993EE9D19D3E /* SettingsUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUI.swift; sourceTree = "<group>"; };
+		36BF7A5A359A4830DC06BEF8 /* ModelSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSettingsView.swift; sourceTree = "<group>"; };
+		3F2768C697EF8E84B373DBC5 /* MeetingActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingActions.swift; sourceTree = "<group>"; };
+		4A76DE056ED4946ABE363586 /* AudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCapture.swift; sourceTree = "<group>"; };
+		526219079DD65918D1AD993C /* CoreAudioHAL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAudioHAL.swift; sourceTree = "<group>"; };
+		58623E28A4DE8330B326540D /* AppPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPaths.swift; sourceTree = "<group>"; };
+		5CB231071E0F52ED2E10E514 /* Exanote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Exanote.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5CF68388F0D3E9C572940B22 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		6166BED36E93AB4C00D6720E /* NotionUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionUI.swift; sourceTree = "<group>"; };
+		68A4FC3C2305FA1990A90C83 /* UpcomingMeetings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingMeetings.swift; sourceTree = "<group>"; };
+		6EF84C7AC6BEBD7187B4CAF7 /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
+		7B597966626C0FD1AF08FCD6 /* Insights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insights.swift; sourceTree = "<group>"; };
+		7BD40403F233DFC8058E953C /* MeetingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingsView.swift; sourceTree = "<group>"; };
+		7E9419F9210CD820375B4114 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		83494972E5DC5C3ED6D18A8A /* ExanoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExanoteApp.swift; sourceTree = "<group>"; };
+		8FED858ADB346B1C6A4764A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		96384D0A43F47D01EBCBEC03 /* LiveTranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTranscriptView.swift; sourceTree = "<group>"; };
+		AA292807FFF3D8A8F96EC4AA /* StorageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSettingsView.swift; sourceTree = "<group>"; };
+		AC4F38E432C00E1A9C312674 /* Teams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Teams.swift; sourceTree = "<group>"; };
+		AC54A5B906F6F104661159CB /* Brand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brand.swift; sourceTree = "<group>"; };
+		B1C5E617F842CE9F3BC1EA9D /* MeetingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingStore.swift; sourceTree = "<group>"; };
+		BFB799488881C2FAAD6DF605 /* LiveAudioSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveAudioSender.swift; sourceTree = "<group>"; };
+		C20901958F3A550FBF5FA409 /* MeetingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetailView.swift; sourceTree = "<group>"; };
+		C433319BFB72B8CAF48F35BC /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		D6D8573F591A25BD22246B2C /* AIConnections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConnections.swift; sourceTree = "<group>"; };
+		DAB066843EC4C537F0138636 /* RecordingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingMode.swift; sourceTree = "<group>"; };
+		E2EAAA29A76F60D85AB41E4B /* WorkspaceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceStore.swift; sourceTree = "<group>"; };
+		E9A024029184E39E600751ED /* RecordingPermissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingPermissions.swift; sourceTree = "<group>"; };
+		F0AF671F7CE15EDF9FDCA7DD /* MeetingDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetector.swift; sourceTree = "<group>"; };
+		F602A862FE6E2ACA9532F8DF /* GoogleAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAccount.swift; sourceTree = "<group>"; };
+		FE4BEC46F4DFEEF4A71B59C4 /* live-demo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "live-demo.wav"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		202876407F69A6B5CDFEA27E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5CB231071E0F52ED2E10E514 /* Exanote.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		20549B4D2E09A114B662F963 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FE4BEC46F4DFEEF4A71B59C4 /* live-demo.wav */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		3F21653F70675F008910BB60 = {
+			isa = PBXGroup;
+			children = (
+				AAA8AD33508D232FD9258034 /* App */,
+				202876407F69A6B5CDFEA27E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AAA8AD33508D232FD9258034 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				D6D8573F591A25BD22246B2C /* AIConnections.swift */,
+				C433319BFB72B8CAF48F35BC /* AppModel.swift */,
+				58623E28A4DE8330B326540D /* AppPaths.swift */,
+				1ED0A1A07F9C2562ADCF3D7D /* Assets.xcassets */,
+				4A76DE056ED4946ABE363586 /* AudioCapture.swift */,
+				AC54A5B906F6F104661159CB /* Brand.swift */,
+				526219079DD65918D1AD993C /* CoreAudioHAL.swift */,
+				3247EE20D3D127F9509A882D /* DisplayName.swift */,
+				83494972E5DC5C3ED6D18A8A /* ExanoteApp.swift */,
+				04213DC0590BF1142776118D /* Folders.swift */,
+				F602A862FE6E2ACA9532F8DF /* GoogleAccount.swift */,
+				5CF68388F0D3E9C572940B22 /* HomeView.swift */,
+				8FED858ADB346B1C6A4764A7 /* Info.plist */,
+				7B597966626C0FD1AF08FCD6 /* Insights.swift */,
+				BFB799488881C2FAAD6DF605 /* LiveAudioSender.swift */,
+				0AD69E079C35222C412BF2E0 /* LiveNotesView.swift */,
+				96384D0A43F47D01EBCBEC03 /* LiveTranscriptView.swift */,
+				3F2768C697EF8E84B373DBC5 /* MeetingActions.swift */,
+				C20901958F3A550FBF5FA409 /* MeetingDetailView.swift */,
+				F0AF671F7CE15EDF9FDCA7DD /* MeetingDetector.swift */,
+				B1C5E617F842CE9F3BC1EA9D /* MeetingStore.swift */,
+				7BD40403F233DFC8058E953C /* MeetingsView.swift */,
+				36BF7A5A359A4830DC06BEF8 /* ModelSettingsView.swift */,
+				6166BED36E93AB4C00D6720E /* NotionUI.swift */,
+				6EF84C7AC6BEBD7187B4CAF7 /* Onboarding.swift */,
+				DAB066843EC4C537F0138636 /* RecordingMode.swift */,
+				E9A024029184E39E600751ED /* RecordingPermissions.swift */,
+				0908701CD35846D46A0FCDC4 /* RecordingUI.swift */,
+				36ACA253CBDD993EE9D19D3E /* SettingsUI.swift */,
+				AA292807FFF3D8A8F96EC4AA /* StorageSettingsView.swift */,
+				1E5D17213FF27724FD80B2D5 /* SystemPermissions.swift */,
+				AC4F38E432C00E1A9C312674 /* Teams.swift */,
+				7E9419F9210CD820375B4114 /* Theme.swift */,
+				68A4FC3C2305FA1990A90C83 /* UpcomingMeetings.swift */,
+				E2EAAA29A76F60D85AB41E4B /* WorkspaceStore.swift */,
+				20549B4D2E09A114B662F963 /* Resources */,
+			);
+			name = App;
+			path = native/App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A636BB00EE645DEA5109A9FB /* Exanote */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3EE169FC070622B710C38A77 /* Build configuration list for PBXNativeTarget "Exanote" */;
+			buildPhases = (
+				111A35A7A386581C5BD11772 /* Sources */,
+				B2F39D82E23820D07176DEEC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Exanote;
+			packageProductDependencies = (
+			);
+			productName = Exanote;
+			productReference = 5CB231071E0F52ED2E10E514 /* Exanote.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B49439B52ABEDF45B596A9B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 8A4880069063C52915F452DE /* Build configuration list for PBXProject "Exanote" */;
+			developmentRegion = ko;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				ko,
+			);
+			mainGroup = 3F21653F70675F008910BB60;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 202876407F69A6B5CDFEA27E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A636BB00EE645DEA5109A9FB /* Exanote */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B2F39D82E23820D07176DEEC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0712F49D45DC5C3B2274735 /* Assets.xcassets in Resources */,
+				ACEC9E0E73BC8ACEC5A74F38 /* live-demo.wav in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		111A35A7A386581C5BD11772 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7EE2D783AB1881D9C74BD5F6 /* AIConnections.swift in Sources */,
+				9A8BD3705288D3990B741A29 /* AppModel.swift in Sources */,
+				0379170C552366E9D4A12ACE /* AppPaths.swift in Sources */,
+				6230C87D82694D3CD21D8465 /* AudioCapture.swift in Sources */,
+				54EEA964015B8502EDF36755 /* Brand.swift in Sources */,
+				C13D99E334D65554CA7CE081 /* CoreAudioHAL.swift in Sources */,
+				2A311AB20EF0E42CF62D0328 /* DisplayName.swift in Sources */,
+				C723454CAA3478C4DEF2A5F6 /* ExanoteApp.swift in Sources */,
+				2A24DCBBF174945A847CB434 /* Folders.swift in Sources */,
+				D1DE5BC6AC8DBCAF21B0E35D /* GoogleAccount.swift in Sources */,
+				0E9CED3E1B7C5500AAEA5587 /* HomeView.swift in Sources */,
+				D63E1EEE80087F07936B670A /* Insights.swift in Sources */,
+				C14A6EB3E9400FA2D727B36E /* LiveAudioSender.swift in Sources */,
+				A09814CDD36D155B14BEE3E8 /* LiveNotesView.swift in Sources */,
+				2261CD58B60F1D4621F05D36 /* LiveTranscriptView.swift in Sources */,
+				38638A4B63A1125FCF77995E /* MeetingActions.swift in Sources */,
+				49DFFBACA32FF6132AFCC205 /* MeetingDetailView.swift in Sources */,
+				3E5C499F2744390FFD114290 /* MeetingDetector.swift in Sources */,
+				59DF8627320FECF8D8D8E0BD /* MeetingStore.swift in Sources */,
+				29925808C234AFE85C29ECE3 /* MeetingsView.swift in Sources */,
+				1DAF42AD950BF30757F5782B /* ModelSettingsView.swift in Sources */,
+				41BF235EE6B6914854B152BE /* NotionUI.swift in Sources */,
+				BD554D24CF7823BA583E21FB /* Onboarding.swift in Sources */,
+				AB12872EF1CB47580EBC3AA7 /* RecordingMode.swift in Sources */,
+				239CB6EA40547D2AD2B2C45A /* RecordingPermissions.swift in Sources */,
+				28B210E9A7AE2CE364316E59 /* RecordingUI.swift in Sources */,
+				B266C4C7532B75D22AA3996E /* SettingsUI.swift in Sources */,
+				6854FB7DB16608EE5CD7F061 /* StorageSettingsView.swift in Sources */,
+				7082DCA6A42A6B9B90C3656A /* SystemPermissions.swift in Sources */,
+				9BDFA5E906D2959DFA5DF44B /* Teams.swift in Sources */,
+				DAFBD80996868CFC2871EBDA /* Theme.swift in Sources */,
+				F3CC2333635AAE5137FC8D78 /* UpcomingMeetings.swift in Sources */,
+				FD5353985BA133F3677D2003 /* WorkspaceStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0230198927DE83C24061D8E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = native/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.exanote.macos;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.10;
+			};
+			name = Debug;
+		};
+		2ABA766FD8B7FAA37C05F2CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = native/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.exanote.macos;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.10;
+			};
+			name = Release;
+		};
+		B8582DA69C7DEDC1648F6D48 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B923560493645208A6A9656D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3EE169FC070622B710C38A77 /* Build configuration list for PBXNativeTarget "Exanote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0230198927DE83C24061D8E0 /* Debug */,
+				2ABA766FD8B7FAA37C05F2CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8A4880069063C52915F452DE /* Build configuration list for PBXProject "Exanote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B923560493645208A6A9656D /* Debug */,
+				B8582DA69C7DEDC1648F6D48 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B49439B52ABEDF45B596A9B /* Project object */;
+}

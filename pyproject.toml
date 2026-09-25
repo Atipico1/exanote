@@ -1,0 +1,34 @@
+[project]
+name = "exanote"
+version = "0.1.0"
+description = "Private, local meeting notes for Apple Silicon"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "edge-lm @ git+https://github.com/TheStageAI/edge-lm.git@ddddf9fddc8750951f32ca98fa0fe19ad7e45fb8",
+  "fastapi>=0.115",
+  "huggingface-hub>=0.34",
+  "mcp>=2.2",
+  "mlx>=0.29",
+  "mlx-lm>=0.31.3",
+  "mlx-qwen3-asr==0.4.4",
+  "mlx-vlm==0.7.2",
+  "numpy>=2.0",
+  "python-multipart>=0.0.20",
+  "safetensors>=0.6",
+  "uvicorn>=0.34",
+]
+
+[project.scripts]
+exanote = "exanote.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/exanote"]

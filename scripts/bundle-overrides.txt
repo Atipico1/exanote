@@ -1,0 +1,5 @@
+# Dependencies pulled in by libraries for features Exanote does not use.
+# opencv-python: mlx-vlm's image and video helpers; the notes model only reads text.
+opencv-python; sys_platform == "never"
+# mlx-audio (with scipy and sounddevice): mlx-vlm imports it only for audio-input models.
+mlx-audio; sys_platform == "never"

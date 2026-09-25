@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>ko</string>
+	<key>CFBundleDisplayName</key>
+	<string>Exanote</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ko</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Google sign-in</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.251531621234-lbp54a575gcjrtr0ppopiivbres41v3k</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>ExanoteGoogleClientID</key>
+	<string>251531621234-lbp54a575gcjrtr0ppopiivbres41v3k.apps.googleusercontent.com</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSAudioCaptureUsageDescription</key>
+	<string>녹음을 시작한 회의에서만 상대방 목소리(다른 앱의 소리)를 녹음해요. 화면은 녹화하지 않아요.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>다가올 회의를 홈에 보여 주고 일정 이름으로 녹음을 시작할 수 있게 해요. 일정은 이 Mac 밖으로 나가지 않아요.</string>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string>선택한 iCloud Drive나 Google Drive 폴더에 회의 전사와 요약을 저장하고 팀과 공유해요.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>녹음을 시작한 회의에서만 내 목소리를 녹음해요.</string>
+</dict>
+</plist>
