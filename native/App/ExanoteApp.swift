@@ -361,7 +361,7 @@ private struct Sidebar: View {
         case "error":
             Image(systemName: "exclamationmark.circle").font(.sidebar(offset: -4)).foregroundStyle(Color.recording).accessibilityLabel("오류")
         default:
-            Text(relativeDay(item.date)).font(.sidebar(offset: -4)).foregroundStyle(.tertiary)
+            EmptyView()
         }
     }
 
@@ -374,26 +374,12 @@ private struct Sidebar: View {
 
     var body: some View {
         List(selection: $nav.route) {
-            Label { Text("홈").font(.sidebar()) } icon: { Image(systemName: "house").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
-                .sidebarRow(.home, selected: nav.route)
-            Label { Text("회의").font(.sidebar()) } icon: { Image(systemName: "tray.full").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
-                .badge(items.count)
-                .sidebarRow(.meetings, selected: nav.route)
-            Button(action: find) {
-                HStack {
-                    Label { Text("검색").font(.sidebar()) } icon: { Image(systemName: "magnifyingglass").font(.sidebar(offset: -2)).foregroundStyle(.secondary) }
-                    Spacer()
-                    Text("⌘F").font(.sidebar(offset: -4)).foregroundStyle(.tertiary)
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-                .sidebarSpacing()
-            .help("회의 제목, 전사, 요약 검색 (⌘F)")
-
             Section {
                 ForEach(recent) { item in
                     HStack(spacing: 8) {
+                        Image(systemName: "doc.text")
+                            .font(.sidebar(offset: -2)).foregroundStyle(.secondary)
+                            .frame(width: CGFloat(Typography.shared.sidebarSize) + 2)
                         Text(item.title).font(.sidebar()).lineLimit(1)
                         Spacer(minLength: 4)
                         recentStatus(item)
@@ -473,17 +459,48 @@ private struct Sidebar: View {
             actions.requestDelete(id: id, title: item.title)
         }
         .safeAreaInset(edge: .top, spacing: 0) {
-            HStack(spacing: 9) {
-                LogoMark(size: 26)
-                Wordmark(size: 17)
-                Spacer()
+            VStack(alignment: .leading, spacing: 12) {
+                Button(action: find) {
+                    HStack(spacing: 8) {
+                        Text("검색").foregroundStyle(.secondary)
+                        Spacer()
+                        Text("⌘K").font(.sidebar(offset: -4)).foregroundStyle(.secondary)
+                            .padding(.horizontal, 4).padding(.vertical, 2)
+                            .background(Color.sidebarSelection, in: RoundedRectangle(cornerRadius: 4))
+                    }
+                    .font(.sidebar(offset: -2))
+                    .padding(.horizontal, 10).padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(Color.hairline))
+                }
+                .buttonStyle(SidebarShortcutStyle())
+                .keyboardShortcut("k", modifiers: .command)
+                HStack(spacing: 4) {
+                    Button { nav.route = .home } label: {
+                        Label("홈", systemImage: "house.fill")
+                    }
+                    .buttonStyle(SidebarShortcutStyle(selected: nav.route == .home))
+                    Button { nav.route = .meetings } label: {
+                        Image(systemName: "tray.full").accessibilityLabel("회의")
+                    }
+                    .buttonStyle(SidebarShortcutStyle(selected: nav.route == .meetings))
+                    .help("회의 · \(items.count)개")
+                    Button { nav.route = .settings(.calendar) } label: {
+                        Image(systemName: "calendar").accessibilityLabel("캘린더")
+                    }
+                    .buttonStyle(SidebarShortcutStyle(selected: nav.route == .settings(.calendar)))
+                    .help("캘린더")
+                    Spacer(minLength: 0)
+                }
+                .font(.sidebar(offset: -2, weight: .medium))
             }
-            .padding(.horizontal, 18)
+            .padding(.horizontal, 12)
             .padding(.top, 6)
-            .padding(.bottom, 10)
+            .padding(.bottom, 16)
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             VStack(spacing: 10) {
+                Rectangle().fill(Color.hairline).frame(height: 1)
                 SetupChecklist(model: AppModel.shared) { nav.route = .settings($0) }
                 HStack(spacing: 10) {
                     Button { editingDisplayName = true } label: {
@@ -495,7 +512,8 @@ private struct Sidebar: View {
                                 // Neutral, so a lime letter in a lime shape stays the logo's alone.
                                 .background(Color.raised, in: Circle())
                                 .accessibilityHidden(true)
-                            Text(displayName).font(.sidebar(weight: .medium)).lineLimit(1)
+                            Text(displayName).font(.sidebar(offset: -2, weight: .medium)).lineLimit(1)
+                            Image(systemName: "chevron.down").font(.sidebar(offset: -6)).foregroundStyle(.secondary)
                         }
                         .contentShape(Rectangle())
                     }
@@ -558,5 +576,28 @@ private struct SidebarLabelStyle: LabelStyle {
                 .frame(width: CGFloat(Typography.shared.sidebarSize) + 2)
             configuration.title
         }
+    }
+}
+
+private struct SidebarShortcutStyle: ButtonStyle {
+    var selected = false
+    func makeBody(configuration: Configuration) -> some View {
+        SidebarShortcutContent(label: configuration.label, selected: selected, pressed: configuration.isPressed)
+    }
+}
+
+private struct SidebarShortcutContent<Content: View>: View {
+    let label: Content
+    let selected: Bool
+    let pressed: Bool
+    @State private var hovering = false
+    var body: some View {
+        label
+            .padding(.horizontal, 8).padding(.vertical, 6)
+            .foregroundStyle(selected ? Color.primary : Color.secondary)
+            .background(selected || pressed ? Color.sidebarSelection : hovering ? Color.sidebarHover : .clear,
+                        in: RoundedRectangle(cornerRadius: 7))
+            .contentShape(Rectangle())
+            .onHover { hovering = $0 }
     }
 }
