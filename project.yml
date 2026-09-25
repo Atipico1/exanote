@@ -21,7 +21,7 @@ targets:
       properties:
         CFBundleDisplayName: Exanote
         CFBundleShortVersionString: "0.1.1"
-        CFBundleVersion: "3"
+        CFBundleVersion: "7"
         SUFeedURL: https://atipico1.github.io/exanote/appcast.xml
         SUPublicEDKey: daaF3+9ccPQYQpEcaB0qcpErUuPqHQVGHDTrIEGh62o=
         SUEnableAutomaticChecks: true

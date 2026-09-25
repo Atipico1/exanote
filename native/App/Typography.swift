@@ -7,19 +7,21 @@ import SwiftUI
 final class Typography {
     static let shared = Typography()
     var fontName: String { didSet { UserDefaults.standard.set(fontName, forKey: "textFont") } }
-    var bodySize: Double { didSet { UserDefaults.standard.set(bodySize, forKey: "textSize") } }
-    var sidebarSize: Double { didSet { UserDefaults.standard.set(sidebarSize, forKey: "sidebarTextSize") } }
+    var sizeLevel: Int { didSet { UserDefaults.standard.set(sizeLevel, forKey: "textSizeLevel") } }
+    var bodySize: Double { Double(10 + sizeLevel * 2) }
+    var sidebarSize: Double { Double(12 + sizeLevel * 2) }
+    var sidebarRowHeight: CGFloat { CGFloat(17 + sizeLevel * 5) }
+    var sidebarSectionGap: CGFloat { CGFloat(3 + sizeLevel * 2) }
     var scale: CGFloat { CGFloat(bodySize / 14) }
 
     private init() {
         let defaults = UserDefaults.standard
         fontName = defaults.string(forKey: "textFont") ?? "system"
-        let body = defaults.double(forKey: "textSize"), sidebar = defaults.double(forKey: "sidebarTextSize")
-        bodySize = body == 0 ? 14 : min(20, max(12, body))
-        sidebarSize = sidebar == 0 ? 16 : min(22, max(13, sidebar))
+        let stored = defaults.integer(forKey: "textSizeLevel")
+        sizeLevel = stored == 0 ? 3 : min(5, max(1, stored))
     }
 
-    func reset() { fontName = "system"; bodySize = 14; sidebarSize = 16 }
+    func reset() { fontName = "system"; sizeLevel = 3 }
 
     func font(size: CGFloat, weight: Font.Weight, design: Font.Design) -> Font {
         if fontName == "system" || design == .monospaced {
@@ -52,13 +54,30 @@ struct TypographySettings: View {
                 .labelsHidden()
                 .frame(width: 220)
             }
-            SettingsRow(title: "본문 글자 크기") {
-                Stepper("\(Int(typography.bodySize)) pt", value: $typography.bodySize, in: 12...20, step: 1)
-                    .fixedSize()
-            }
-            SettingsRow(title: "사이드바 글자 크기", detail: "메뉴, 회의 제목, 폴더 이름을 따로 조절해요") {
-                Stepper("\(Int(typography.sidebarSize)) pt", value: $typography.sidebarSize, in: 13...22, step: 1)
-                    .fixedSize()
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("글자 크기").font(.app(size: 13.5, weight: .medium))
+                    Spacer()
+                    Text("\(typography.sizeLevel)단계" + (typography.sizeLevel == 3 ? " · 기본" : ""))
+                        .font(.app(size: 12)).foregroundStyle(.secondary)
+                }
+                Text("사이드바와 본문의 크기를 함께 조절해요")
+                    .font(.app(size: 12)).foregroundStyle(.secondary)
+                Slider(value: Binding(get: { Double(typography.sizeLevel) },
+                                      set: { typography.sizeLevel = Int($0.rounded()) }), in: 1...5, step: 1) {
+                    Text("글자 크기")
+                }
+                .labelsHidden()
+                .accessibilityValue("\(typography.sizeLevel)단계, 전체 5단계")
+                HStack {
+                    ForEach(1...5, id: \.self) { level in
+                        if level > 1 { Spacer() }
+                        Text(level == 1 ? "작게" : level == 3 ? "기본" : level == 5 ? "크게" : "·")
+                            .font(.app(size: 11))
+                            .foregroundStyle(level == typography.sizeLevel ? Color.brandText : Color.secondary)
+                    }
+                }
+                .accessibilityHidden(true)
             }
             SettingsRow(title: "미리 보기", detail: "회의에서 나눈 이야기를 편하게 읽어 보세요.") {
                 Button("기본값으로") { typography.reset() }.buttonStyle(PillButtonStyle(compact: true))

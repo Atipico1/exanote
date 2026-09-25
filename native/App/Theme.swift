@@ -45,7 +45,8 @@ struct PillButtonStyle: ButtonStyle {
             .font(.app(size: compact ? 12 : 13, weight: .semibold))
             .lineLimit(1)
             .padding(.horizontal, compact ? 11 : 15)
-            .frame(height: compact ? 28 : 34)
+            .padding(.vertical, compact ? 5 : 7)
+            .frame(minHeight: compact ? 28 : 34)
             .foregroundStyle(foreground)
             .background(background, in: Capsule())
             .overlay(Capsule().strokeBorder(kind == .secondary ? Color.hairline : .clear))
@@ -163,7 +164,7 @@ struct PillTabs: View {
                         .font(.app(size: 13, weight: selected ? .semibold : .regular))
                         .foregroundStyle(selected ? Color.primary : Color.secondary)
                         .padding(.horizontal, 14)
-                        .frame(height: 30)
+                        .frame(minHeight: max(30, 30 * Typography.shared.scale))
                         .background(selected ? Color.surface : .clear, in: Capsule())
                         .overlay(Capsule().strokeBorder(selected ? Color.hairline : .clear))
                         .contentShape(Capsule())
@@ -199,7 +200,7 @@ struct SearchField: View {
         }
         .font(.app(size: 13))
         .padding(.horizontal, 14)
-        .frame(height: 36)
+        .frame(minHeight: max(36, 36 * Typography.shared.scale))
         .background(Color.surface, in: Capsule())
         .overlay(Capsule().strokeBorder(focused ? Color.brandText : Color.hairline, lineWidth: focused ? 1.5 : 1))
         .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in focused = true }
@@ -342,9 +343,14 @@ struct ToolbarBackdrop: View {
 }
 
 extension View {
+    func sidebarSpacing() -> some View {
+        self.frame(minHeight: Typography.shared.sidebarRowHeight)
+            .listRowInsets(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8))
+    }
+
     /// Tags a sidebar row and draws the Notion-style gray selection behind it.
     func sidebarRow(_ route: Route, selected: Route?) -> some View {
-        tag(route).listRowBackground(
+        sidebarSpacing().tag(route).listRowBackground(
             RoundedRectangle(cornerRadius: 6, style: .continuous)
                 .fill(selected == route ? Color.sidebarSelection : .clear)
                 .padding(.horizontal, 10)

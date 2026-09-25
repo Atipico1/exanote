@@ -57,7 +57,7 @@ struct SettingsRow<Trailing: View>: View {
     var detailColor: Color = .secondary
     @ViewBuilder var trailing: Trailing
 
-    var body: some View {
+    private var heading: some View {
         HStack(spacing: 12) {
             if let symbol { IconWell(symbol: symbol) }
             VStack(alignment: .leading, spacing: 2) {
@@ -70,9 +70,23 @@ struct SettingsRow<Trailing: View>: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            trailing
         }
     }
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                heading.fixedSize(horizontal: true, vertical: false)
+                Spacer(minLength: 0)
+                trailing
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                heading
+                trailing
+            }
+        }
+    }
+
 }
 
 extension SettingsRow where Trailing == EmptyView {

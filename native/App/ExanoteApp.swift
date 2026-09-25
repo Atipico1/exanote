@@ -374,26 +374,27 @@ private struct Sidebar: View {
 
     var body: some View {
         List(selection: $nav.route) {
-            Label { Text("홈") } icon: { Image(systemName: "house").foregroundStyle(.secondary) }
+            Label { Text("홈").font(.sidebar()) } icon: { Image(systemName: "house").font(.sidebar()).foregroundStyle(.secondary) }
                 .sidebarRow(.home, selected: nav.route)
-            Label { Text("회의") } icon: { Image(systemName: "tray.full").foregroundStyle(.secondary) }
+            Label { Text("회의").font(.sidebar()) } icon: { Image(systemName: "tray.full").font(.sidebar()).foregroundStyle(.secondary) }
                 .badge(items.count)
                 .sidebarRow(.meetings, selected: nav.route)
             Button(action: find) {
                 HStack {
-                    Label { Text("검색") } icon: { Image(systemName: "magnifyingglass").foregroundStyle(.secondary) }
+                    Label { Text("검색").font(.sidebar()) } icon: { Image(systemName: "magnifyingglass").font(.sidebar()).foregroundStyle(.secondary) }
                     Spacer()
                     Text("⌘F").font(.sidebar(offset: -2)).foregroundStyle(.tertiary)
                 }
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+                .sidebarSpacing()
             .help("회의 제목, 전사, 요약 검색 (⌘F)")
 
             Section {
                 ForEach(recent) { item in
                     HStack(spacing: 8) {
-                        Text(item.title).lineLimit(1)
+                        Text(item.title).font(.sidebar()).lineLimit(1)
                         Spacer(minLength: 4)
                         recentStatus(item)
                     }
@@ -403,9 +404,10 @@ private struct Sidebar: View {
                 }
                 if items.count > recent.count {
                     Button { nav.route = .meetings } label: {
-                        Text("모두 보기").foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
+                        Text("모두 보기").font(.sidebar()).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                .sidebarSpacing()
                 }
             } header: {
                 SidebarHeader(title: "최근")
@@ -415,8 +417,8 @@ private struct Sidebar: View {
                 Section {
                     ForEach(spaces, id: \.self) { scope in
                         HStack {
-                            Label { Text(scope.title(sharedName: sharedName)).lineLimit(1) } icon: {
-                                Image(systemName: scope.symbol).foregroundStyle(.secondary)
+                            Label { Text(scope.title(sharedName: sharedName)).font(.sidebar()).lineLimit(1) } icon: {
+                                Image(systemName: scope.symbol).font(.sidebar()).foregroundStyle(.secondary)
                             }
                             Spacer()
                             Text("\(items.filter(scope.contains).count)").font(.sidebar(offset: -2).monospacedDigit()).foregroundStyle(.tertiary)
@@ -432,7 +434,7 @@ private struct Sidebar: View {
                 let ids = Set(items.map(\.id))
                 ForEach(folders.folders) { folder in
                     HStack {
-                        Label { Text(folder.name).lineLimit(1) } icon: { Image(systemName: "folder").foregroundStyle(.secondary) }
+                        Label { Text(folder.name).font(.sidebar()).lineLimit(1) } icon: { Image(systemName: "folder").font(.sidebar()).foregroundStyle(.secondary) }
                         Spacer()
                         Text("\(folders.count(folder, among: ids))").font(.sidebar(offset: -2).monospacedDigit()).foregroundStyle(.tertiary)
                     }
@@ -448,18 +450,19 @@ private struct Sidebar: View {
                     }
                 }
                 Button { folders.requestCreate() } label: {
-                    Label { Text("새 폴더") } icon: { Image(systemName: "plus").foregroundStyle(.secondary) }
+                    Label { Text("새 폴더").font(.sidebar()) } icon: { Image(systemName: "plus").font(.sidebar()).foregroundStyle(.secondary) }
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .sidebarSpacing()
             } header: {
                 SidebarHeader(title: "폴더")
             }
         }
         .font(.sidebar())
-        .environment(\.defaultMinListRowHeight, CGFloat(Typography.shared.sidebarSize) + 20)
+        .environment(\.defaultMinListRowHeight, Typography.shared.sidebarRowHeight)
         .listStyle(.sidebar)
         .scrollContentBackground(.hidden)
         .background(PlainSidebarSelection())
@@ -540,5 +543,7 @@ private struct SidebarHeader: View {
             .font(.sidebar(offset: -2, weight: .medium))
             .foregroundStyle(.secondary)
             .textCase(nil)
+            .padding(.top, Typography.shared.sidebarSectionGap)
+            .padding(.bottom, 2)
     }
 }
