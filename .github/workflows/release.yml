@@ -70,6 +70,7 @@ jobs:
     environment: release
     permissions:
       contents: write
+      pages: write
     env:
       GH_TOKEN: ${{ github.token }}
       TAG: ${{ needs.build.outputs.tag }}

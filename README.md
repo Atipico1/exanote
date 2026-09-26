@@ -24,7 +24,7 @@
 
 Exanote는 **macOS 15 이상을 설치한 Apple Silicon Mac**에서 실행됩니다. [최신 버전 다운로드](https://github.com/Atipico1/exanote/releases/latest/download/Exanote.dmg) · [릴리스 목록](https://github.com/Atipico1/exanote/releases)
 
-첫 공증 배포를 준비 중입니다. 첫 공개 전에는 다운로드 링크가 동작하지 않습니다. 소스에서 실행하려면 [빌드 안내](docs/development.md)를 참고하세요.
+Developer ID 서명과 Apple 공증을 완료한 DMG를 제공합니다. 다운로드한 DMG를 열고 Exanote를 응용 프로그램 폴더로 옮기세요. 이후 업데이트는 앱에서 확인할 수 있습니다. 소스에서 실행하려면 [빌드 안내](docs/development.md)를 참고하세요.
 
 처음 사용할 때 음성 처리 모델을 내려받습니다. 녹음을 시작하거나, 이미 있는 오디오 파일을 가져오면 됩니다.
 
