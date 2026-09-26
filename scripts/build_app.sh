@@ -13,6 +13,9 @@ cd "$ROOT"
 
 echo "▸ Building the Swift app"
 xcodegen generate >/dev/null
+if [ -n "${RELEASE_VERSION:-}" ]; then
+  /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $RELEASE_VERSION" native/App/Info.plist
+fi
 if [ -n "${BUILD_NUMBER:-}" ]; then
   /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" native/App/Info.plist
 fi
