@@ -1,6 +1,8 @@
 # GitHub 배포
 
-`main` push 또는 Actions의 수동 실행은 Apple Silicon macOS runner에서 테스트와 앱 빌드를 실행합니다. 결과 ZIP은 `exanote-review` artifact에서 검토할 수 있습니다. 테스트용 ad-hoc 빌드이므로 일반 사용자 배포용이 아닙니다.
+`main`에 앱 코드(`native/`, `src/`, `web/`), 의존성, 빌드·배포 설정이 변경되거나 Actions에서 수동 실행하면 Apple Silicon macOS runner에서 테스트와 앱 빌드를 실행합니다. README, 문서, 사이트, 벤치마크 결과만 수정한 push는 배포 workflow를 실행하지 않으며 버전·태그도 생성하지 않습니다. 문서와 앱 코드를 함께 수정하면 실행됩니다. 정확한 대상 경로는 `.github/workflows/release.yml`의 `push.paths`에 정의합니다.
+
+결과 ZIP은 `exanote-review` artifact에서 검토할 수 있습니다. 테스트용 ad-hoc 빌드이므로 일반 사용자 배포용이 아닙니다.
 
 그다음 `release` environment가 사용자 승인을 기다립니다. **공증 전에 승인**하는 단계이며 자동으로 승인하지 않습니다. GitHub Actions 실행 페이지의 Review deployments에서 해당 커밋을 확인합니다. 공증과 공개는 승인 이후 연속으로 실행됩니다.
 

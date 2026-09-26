@@ -2,6 +2,22 @@ name: Build and release macOS
 on:
   push:
     branches: [main]
+    paths:
+      - 'native/**'
+      - 'src/**'
+      - 'web/**'
+      - 'project.yml'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'scripts/build_app.sh'
+      - 'scripts/sign_app.sh'
+      - 'scripts/notarize_app.sh'
+      - 'scripts/prepare_update.sh'
+      - 'scripts/ci_credentials.sh'
+      - 'scripts/release_version.py'
+      - 'scripts/bundle-overrides.txt'
+      - 'scripts/*.entitlements'
+      - '.github/workflows/release.yml'
   workflow_dispatch:
     inputs:
       version:
