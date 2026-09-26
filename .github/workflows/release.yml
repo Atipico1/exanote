@@ -1,0 +1,108 @@
+name: Build and release macOS
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: macos-release
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 45
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: brew install xcodegen uv
+      - name: Set unique build version
+        id: version
+        run: |
+          VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' native/App/Info.plist)
+          echo "BUILD_NUMBER=$((100 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
+          echo "tag=v${VERSION}-build.$((100 + GITHUB_RUN_NUMBER))" >> "$GITHUB_OUTPUT"
+      - name: Test
+        run: |
+          uv sync --frozen
+          uv run --with pytest pytest -q
+      - name: Build Apple Silicon app
+        run: bash scripts/build_app.sh
+      - name: Package review artifact
+        run: |
+          ditto -c -k --keepParent build/Exanote.app build/Exanote-review.zip
+          echo 'Build completed. The release job requires approval before signing, notarization and publication.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exanote-review
+          path: build/Exanote-review.zip
+          retention-days: 14
+  release:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-15
+    timeout-minutes: 60
+    environment: release
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ needs.build.outputs.tag }}
+      SIGN_IDENTITY: 'Developer ID Application: SEONGIL PARK (SCJ956V4H5)'
+      NOTARY_PROFILE: exanote-ci
+      OUT: ${{ github.workspace }}/build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: exanote-review
+          path: build
+      - name: Restore app
+        run: ditto -x -k build/Exanote-review.zip build
+      - name: Configure signing credentials
+        env:
+          CERTIFICATE_P12_BASE64: ${{ secrets.CERTIFICATE_P12_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+          NOTARY_KEY_P8: ${{ secrets.NOTARY_KEY_P8 }}
+          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: bash scripts/ci_credentials.sh
+      - name: Sign and notarize
+        run: |
+          bash scripts/sign_app.sh "$OUT/Exanote.app"
+          bash scripts/notarize_app.sh
+      - name: Build signed update feed
+        run: |
+          gh release download 2.10.0 --repo sparkle-project/Sparkle --pattern Sparkle-2.10.0.tar.xz --dir "$RUNNER_TEMP"
+          mkdir -p "$RUNNER_TEMP/sparkle"
+          tar -xf "$RUNNER_TEMP/Sparkle-2.10.0.tar.xz" -C "$RUNNER_TEMP/sparkle"
+          SPARKLE_BIN="$RUNNER_TEMP/sparkle/bin" SPARKLE_KEY_FILE="$RUNNER_TEMP/sparkle.key" bash scripts/prepare_update.sh "$OUT" "$TAG"
+          (cd build && shasum -a 256 Exanote.dmg updates/Exanote.zip > SHA256SUMS)
+      - name: Publish release
+        run: |
+          gh release create "$TAG" --target "$GITHUB_SHA" --title "Exanote $TAG" --generate-notes --draft
+          gh release upload "$TAG" build/Exanote.dmg build/updates/Exanote.zip build/SHA256SUMS
+          gh release edit "$TAG" --draft=false --latest
+      - name: Publish Sparkle feed
+        run: |
+          git fetch origin gh-pages
+          git worktree add "$RUNNER_TEMP/exanote-pages" origin/gh-pages
+          cp build/updates/appcast.xml "$RUNNER_TEMP/exanote-pages/appcast.xml"
+          cd "$RUNNER_TEMP/exanote-pages"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add appcast.xml
+          git commit -m "Publish update $TAG"
+          git push origin HEAD:gh-pages
+      - name: Deploy Pages
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
+      - name: Clean credentials
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/exanote-signing.keychain-db" || true
+          rm -f "$RUNNER_TEMP/certificate.p12" "$RUNNER_TEMP/notary.p8" "$RUNNER_TEMP/sparkle.key"

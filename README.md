@@ -22,7 +22,9 @@
 
 ## 설치와 실행
 
-Exanote는 **macOS 15 이상을 설치한 Apple Silicon Mac**에서 실행됩니다. 현재는 소스에서 앱을 빌드해 사용할 수 있습니다. 필요한 도구와 실행 명령은 [빌드 안내](docs/development.md)에 정리했습니다.
+Exanote는 **macOS 15 이상을 설치한 Apple Silicon Mac**에서 실행됩니다. [최신 버전 다운로드](https://github.com/Atipico1/exanote/releases/latest/download/Exanote.dmg) · [릴리스 목록](https://github.com/Atipico1/exanote/releases)
+
+첫 공증 배포를 준비 중입니다. 첫 공개 전에는 다운로드 링크가 동작하지 않습니다. 소스에서 실행하려면 [빌드 안내](docs/development.md)를 참고하세요.
 
 처음 사용할 때 음성 처리 모델을 내려받습니다. 녹음을 시작하거나, 이미 있는 오디오 파일을 가져오면 됩니다.
 

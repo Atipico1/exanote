@@ -11,7 +11,9 @@ xcrun stapler validate "$APP"
 spctl --assess --type execute "$APP"
 mkdir -p "$OUT/updates"
 ditto -c -k --keepParent "$APP" "$OUT/updates/Exanote.zip"
-"$SPARKLE_BIN/generate_appcast" --account exanote --maximum-deltas 0 \
+KEY_ARGS=(--account exanote)
+if [ -n "${SPARKLE_KEY_FILE:-}" ]; then KEY_ARGS=(--ed-key-file "$SPARKLE_KEY_FILE"); fi
+"$SPARKLE_BIN/generate_appcast" "${KEY_ARGS[@]}" --maximum-deltas 0 \
   --download-url-prefix "https://github.com/Atipico1/exanote/releases/download/$TAG/" "$OUT/updates"
 (cd "$OUT/updates" && shasum -a 256 Exanote.zip > SHA256SUMS)
 echo "Upload Exanote.zip to the release, then publish updates/appcast.xml to GitHub Pages."
