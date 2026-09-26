@@ -1,2 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"><channel><title>Exanote Updates</title><link>https://github.com/Atipico1/exanote/releases</link><description>Exanote macOS releases</description><language>ko</language></channel></rss>
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Exanote</title>
+        <item>
+            <title>0.1.1</title>
+            <pubDate>Sat, 26 Sep 2026 02:37:46 +0000</pubDate>
+            <sparkle:version>104</sparkle:version>
+            <sparkle:shortVersionString>0.1.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <enclosure url="https://github.com/Atipico1/exanote/releases/download/v0.1.1/Exanote.zip" length="144768412" type="application/octet-stream" sparkle:edSignature="WUa1Yk+pGAnq7WfhiRGqkmDAmIKOr07QKAuwdvvzgp8EE4Ql8ySLeZTepAOIoELROLBS0himBcPC5z39TnnbDQ=="/>
+        </item>
+    </channel>
+</rss>
