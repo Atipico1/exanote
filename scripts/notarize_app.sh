@@ -12,10 +12,12 @@ ZIP="$OUT/Exanote-notary.zip"
 
 [ -d "$APP" ] || { echo "Missing $APP; run scripts/build_app.sh first" >&2; exit 1; }
 codesign --verify --deep --strict "$APP"
-codesign -dv "$APP" 2>&1 | grep -q 'Authority=Developer ID Application:' || {
+signature_details="$(codesign -dvv "$APP" 2>&1)"
+if ! grep -q '^Authority=Developer ID Application:' <<< "$signature_details"; then
   echo "Exanote.app needs a Developer ID Application signature" >&2
+  echo "$signature_details" >&2
   exit 1
-}
+fi
 
 submit() {
   local artifact="$1" result status submission_id
