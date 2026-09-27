@@ -423,27 +423,41 @@ def _summary_body(response: str) -> str:
     return "\n".join(lines).strip()
 
 
+NOTES_SYSTEM = "당신은 회의록 편집자입니다. 주어진 전사만 근거로 한국어 회의 노트를 씁니다."
+
+# The published meeting-notes shape: purpose, discussion with attribution, decisions, action items
+# with owner and due date, unresolved questions. Measured against the previous bullet prompt on a
+# 49:51 broadcast and a 64:54 transcript built from the same recording, it attributed positions to
+# speakers, reported "없음" instead of inventing decisions, and recovered action items with owners.
+NOTES_INSTRUCTION = """아래 회의 전사를 읽고 회의 노트를 작성하세요.
+
+## 회의 목적
+한 문장으로.
+
+## 핵심 논의
+주제별 3~6개 불릿. 누가 주장했는지 함께 적습니다.
+
+## 결정사항
+확정된 것만. 없으면 "없음".
+
+## 할 일
+발화자가 스스로 하겠다고 한 일만. "할 일 — 담당 — 기한" 형식으로 적고, 기한이 없으면 "미정"이라고 씁니다.
+
+## 미해결
+답이 나오지 않은 질문과 쟁점.
+
+전사에 없는 내용은 쓰지 않습니다. 날짜와 숫자와 이름은 원문 그대로 씁니다.
+
+전사:
+"""
+
+
 def summarize(transcript: str, model_id: str | None = None) -> str:
     if not transcript.strip():
         return "전사된 발화가 없어 요약할 수 없습니다."
     generate_notes = _notes_generator(model_id or _model("notes"))
-    system = (
-        "회의 전사에 있는 사실만 한국어 마크다운으로 요약하세요. "
-        "요약문 본문만 출력하고 인사, 안내 문구, 제목, 코드 블록, 지시 수행 설명, 할 일 목록은 쓰지 마세요."
-    )
-    if len(transcript) > 7_000:
-        instruction = (
-            "아래 긴 회의의 주요 논점과 서로 다른 입장을 6~10개 짧은 마크다운 불릿으로 바로 요약하세요. "
-            "특정 화자의 주장을 전체 합의로 쓰지 말고, 확정되지 않은 내용을 결정으로 쓰지 마세요.\n\n전사:\n"
-        )
-        max_tokens = 900
-    else:
-        instruction = (
-            "아래 회의를 한국어 2~4문장으로 바로 요약하세요. 확정된 결정과 미정인 사항을 구분하고, "
-            "제안을 결정으로 쓰지 마세요. 별도 머리말이나 제목 없이 첫 문장부터 시작하세요.\n\n전사:\n"
-        )
-        max_tokens = 350
-    return _summary_body(generate_notes(system, instruction + transcript, max_tokens))
+    max_tokens = 1_200 if len(transcript) > 7_000 else 700
+    return _summary_body(generate_notes(NOTES_SYSTEM, NOTES_INSTRUCTION + transcript, max_tokens))
 
 
 def release_models() -> None:
