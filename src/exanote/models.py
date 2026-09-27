@@ -48,12 +48,13 @@ CATALOG = (
     Model("asr", "음성 인식", "Qwen3-ASR 1.7B", "moona3k/mlx-qwen3-asr-1.7b-8bit", "qwen3-asr-1.7b-8bit",
           ("config.json", "tokenizer_config.json", "vocab.json", "merges.txt", "quantization_config.json", "weights.safetensors"),
           2_180_000_000, "EXANOTE_ASR_MODEL"),
-    # The published full-8-bit copy quantizes the audio encoder as well as the text decoder.
-    Model("aligner", "단어 시간 맞춤", "Qwen3-ForcedAligner 0.6B", "ethansipark/Qwen3-ForcedAligner-0.6B-8bit-full-MLX",
-          "qwen3-forcedaligner-0.6b-8bit",
-          ("config.json", "tokenizer_config.json", "vocab.json", "merges.txt", "preprocessor_config.json",
-           "generation_config.json", "chat_template.json", "model.safetensors"),
-          985_000_000, "EXANOTE_ALIGNER_MODEL"),
+    # 8-bit audio encoder, 4-bit text decoder: 300 MB smaller than the full-8-bit copy with no
+    # measured change in word text, speaker labels or attribution across the ten-clip validation.
+    Model("aligner", "단어 시간 맞춤", "Qwen3-ForcedAligner 0.6B", "ethansipark/Qwen3-ForcedAligner-0.6B-8enc4dec-MLX",
+          "qwen3-forcedaligner-0.6b-8enc4dec",
+          ("config.json", "quantization_config.json", "tokenizer_config.json", "vocab.json", "merges.txt",
+           "preprocessor_config.json", "generation_config.json", "chat_template.json", "model.safetensors"),
+          683_000_000, "EXANOTE_ALIGNER_MODEL"),
     # Only the text-only PLE L files; the repo's vision and audio towers are never downloaded.
     Model("notes", "요약", "Gemma 4 E2B PLE L", "TheStageAI/gemma-4-E2B-it-qat", "gemma-4-e2b-ple-l",
           ("config.json", "tokenizer.json", "tokenizer_config.json", "model_l.safetensors", "ple_l.safetensors"),
