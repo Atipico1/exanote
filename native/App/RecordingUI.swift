@@ -123,6 +123,10 @@ struct RecordingPill: View {
                 PillIconButton(symbol: "note.text", help: "Exanote에서 메모하기") {
                     model.showMain(route: session.meetingID.map { .local($0) })
                 }
+                PillIconButton(symbol: "eye.slash", help: "화면 공유를 위해 이 표시 숨기기 · 메뉴 막대에서 다시 표시") {
+                    model.hideRecordingPill()
+                }
+                .accessibilityLabel("녹음 표시 숨기기")
                 Button { model.stopMeeting() } label: {
                     Text("종료").font(.app(size: 12, weight: .semibold)).foregroundStyle(.white)
                         .padding(.horizontal, 12).frame(height: 28)
@@ -164,7 +168,7 @@ struct RecordingPill: View {
         .environment(\.colorScheme, .dark)
         .contextMenu {
             Button("Exanote 열기") { model.showMain(route: session.meetingID.map { .local($0) }) }
-            Button("화면 위 녹음 표시 끄기") { UserDefaults.standard.set(false, forKey: RecordingPrefs.showPill) }
+            Button("화면 위 녹음 표시 숨기기") { model.hideRecordingPill() }
         }
     }
 
@@ -312,6 +316,7 @@ struct MenuBarContent: View {
     @ObservedObject var store: MeetingStore
     @ObservedObject var detector: MeetingDetector
     @ObservedObject var calendar: UpcomingMeetingsStore
+    @AppStorage(RecordingPrefs.showPill) private var showPill = true
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
@@ -385,6 +390,13 @@ struct MenuBarContent: View {
                 Button { model.stopMeeting() } label: { Text("종료") }
                     .buttonStyle(PillButtonStyle(kind: .danger, compact: true))
             }
+            Button(showPill ? "화면 위 녹음 표시 숨기기" : "화면 위 녹음 표시 다시 보기") {
+                if showPill { model.hideRecordingPill() }
+                else { model.showRecordingPill() }
+            }
+            .buttonStyle(.plain)
+            .font(.app(size: 11.5, weight: .medium))
+            .foregroundStyle(.secondary)
         }
     }
 

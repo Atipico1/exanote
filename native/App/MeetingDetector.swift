@@ -1,4 +1,5 @@
 import CoreAudio
+import Combine
 import Foundation
 
 struct MeetingSignal: Equatable {
@@ -13,8 +14,10 @@ struct MeetingSignal: Equatable {
 final class MeetingDetector: ObservableObject {
     @Published private(set) var active: MeetingSignal?
 
-    private static let apps: [(prefix: String, name: String)] = [
+    nonisolated private static let apps: [(prefix: String, name: String)] = [
         ("us.zoom", "Zoom"),
+        ("zoom.us", "Zoom"),
+        ("com.microsoft.teams2", "Microsoft Teams"),
         ("com.microsoft.teams", "Microsoft Teams"),
         ("com.cisco.webex", "Webex"),
         ("Cisco-Systems.Spark", "Webex"),
@@ -43,9 +46,16 @@ final class MeetingDetector: ObservableObject {
         for process in HAL.objects(HAL.system, kAudioHardwarePropertyProcessObjectList) {
             guard HAL.value(process, kAudioProcessPropertyIsRunningInput, default: UInt32(0)) == 1,
                   let bundleID = HAL.string(process, kAudioProcessPropertyBundleID),
-                  let app = apps.first(where: { bundleID.hasPrefix($0.prefix) }) else { continue }
-            return MeetingSignal(name: app.name, bundleID: bundleID)
+                  let signal = classify(bundleID: bundleID) else { continue }
+            return signal
         }
         return nil
+    }
+
+    nonisolated static func classify(bundleID: String) -> MeetingSignal? {
+        guard let app = apps.first(where: { bundleID == $0.prefix || bundleID.hasPrefix($0.prefix + ".") }) else {
+            return nil
+        }
+        return MeetingSignal(name: app.name, bundleID: bundleID)
     }
 }

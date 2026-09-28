@@ -69,7 +69,10 @@ class LiveDiarizer:
         consumed = len(self.buffer) if final else own * self.frame_samples
         self.buffer = self.buffer[consumed:]
         self.processed_samples += consumed
-        mx.clear_cache()
+        # Clearing MLX's buffer cache after every inference costs more than the buffers it returns:
+        # the next inference re-allocates them. Release only when the cache has grown large.
+        if self.processed_samples % (self.sample_rate * 20) < consumed:
+            mx.clear_cache()
 
     @property
     def covered_seconds(self) -> float:

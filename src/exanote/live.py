@@ -20,6 +20,25 @@ from .pipeline import _model, _notes_generator, release_models
 
 _translation_jobs = ThreadPoolExecutor(max_workers=1, thread_name_prefix="live-translate")
 
+# A pause inside a sentence makes the recogniser re-decode a fragment and terminate it, so a list
+# item reaches the translator as a standalone imperative ("Rerun the onboarding with five new
+# users."). Holding one row lets the next fragment join it, and each row's translation is written
+# once and never rewritten, so nothing the reader has already seen is erased. False keeps the old
+# one-row-at-a-time behaviour so the two can be compared on the same audio.
+GROUP_TRANSLATION = True
+GROUP_GAP_SECONDS = 1.2
+# Long enough to hold a whole sentence. A spoken sentence in the test material ran 11.8 s; an 8 s
+# cap cut it in half, so the second half reached the translator without its subject and came back as
+# an imperative ("새 사용자 다섯 명으로 온보딩을 다시 살펴보세요"). At 20 s the same clip produced no
+# imperatives at all. The gap rule still ends a card when the speaker pauses or changes.
+GROUP_MAX_SECONDS = 20.0
+# The diariser sometimes starts a turn late, so the first words of an utterance land in no turn at
+# all; audio that belongs to no turn is never decoded, and those words never reach the transcript
+# (measured: "I will fix both before the" and "One of them" in the short-dialogue clip). When a
+# turn is the next speech after the last decoded audio, its span starts there instead, up to this
+# far back. Longer gaps are left alone so a turn after a real silence is not widened.
+TURN_GAP_RECOVERY_SECONDS = 2.5
+
 
 class LiveTranslator:
     """Load translation only for an active live session, off the audio thread."""
@@ -71,10 +90,11 @@ class LiveMeeting:
         self.asr = Session(model=_model("asr"))
         # Final rows use a fresh per-turn decode, so the provisional window can
         # stay short enough to keep up with live capture on this Mac.
-        self.asr_state = self.asr.init_streaming(language="English", chunk_size_sec=2.0, max_context_sec=8.0)
+        self.asr_state = self.asr.init_streaming(language="English", chunk_size_sec=1.0, max_context_sec=8.0)
         self.diarizer = LiveDiarizer(NemotronMLX(models.ensure("diarization") / "model.safetensors"))
         self.translator = LiveTranslator()
         self.audio = np.empty((0, 2), dtype=np.float32)
+        self.pending_diarization: list[np.ndarray] = []
         self.resample_remainder = np.empty((0, 2), dtype=np.float32)
         self.audio_start = 0.0
         self.duration = 0.0
@@ -88,8 +108,10 @@ class LiveMeeting:
         self.lock = threading.Lock()
         self.preview_text = ""
         self.preview_speaker: str | None = None
+        self.preview_speaker_id: int | None = None
         self.preview_overlap = False
         self.translation_cache: dict[str, str] = {}
+        self.translation_group: list[dict] = []
         self.finished = False
         self.error: str | None = None
         self.next_sequence = 0
@@ -141,16 +163,36 @@ class LiveMeeting:
         self.audio = np.concatenate((self.audio, pair))
         self.duration += len(pair) / 16_000
         mono = np.clip(pair[:, 0] + pair[:, 1], -1, 1)
-        self.diarizer.feed(mono)
         self.asr.feed_audio(mono, self.asr_state)
-        self._finalize_turns(self.diarizer.covered_seconds - 0.45)
+        self.pending_diarization.append(mono)
         self._update_preview()
+
+    def refine(self) -> None:
+        """Confirm speaker turns after the provisional caption has been returned.
+
+        The server queues this on the same single-worker executor as feed() and
+        finish(), so ASR state and audio trimming retain their original ordering.
+        """
+        if self.finished:
+            return
+        try:
+            for mono in self.pending_diarization:
+                self.diarizer.feed(mono)
+            self.pending_diarization.clear()
+            self._finalize_turns(self.diarizer.covered_seconds - 0.45)
+            self._update_preview()
+        except Exception as error:
+            self.error = str(error)
 
     def finish(self) -> dict:
         if not self.finished:
             self.asr.finish_streaming(self.asr_state)
+            for mono in self.pending_diarization:
+                self.diarizer.feed(mono)
+            self.pending_diarization.clear()
             self.diarizer.finish()
             self._finalize_turns(self.duration + 1)
+            self._flush_translation_group()
             self.finished = True
             self._update_preview()
             self._archive()
@@ -177,6 +219,7 @@ class LiveMeeting:
         self.asr = None
         self.asr_state = None
         self.diarizer = None
+        self.pending_diarization.clear()
         self.audio = np.empty((0, 2), dtype=np.float32)
         self.translation_done = _translation_jobs.submit(self._release_after_finish)
 
@@ -200,9 +243,10 @@ class LiveMeeting:
             self.asr_committed_words = max(self.asr_committed_words,
                                            min(len(current), position + len(finished)))
         else:
-            # The mixed stream and a channel-specific final transcript can differ.
-            # Suppress stale provisional words rather than showing them twice.
-            self.asr_committed_words = len(current)
+            # The mixed stream and a channel-specific final transcript can differ. Step past the
+            # words this row carried instead of blanking the caption the reader is watching; a
+            # repeated word is a smaller failure than a sentence that disappears.
+            self.asr_committed_words = min(len(current), self.asr_committed_words + len(finished))
 
     def _current_preview(self) -> dict | None:
         if self.finished:
@@ -217,9 +261,14 @@ class LiveMeeting:
         # than only the most recent second for the temporary speaker badge.
         segment_start = max(self.committed_until, self.diarizer.covered_seconds - 4.0)
         speaker, confidence = self.diarizer.dominant(segment_start, self.diarizer.covered_seconds)
-        if speaker is None or confidence < 0.45:
-            return None
-        channel = self.speaker_channel.get(speaker)
+        if speaker is not None and confidence >= 0.45:
+            self.preview_speaker_id = speaker
+        else:
+            # Show the words under the last speaker the diariser was sure about rather than hiding
+            # the caption until it decides. Waiting for that confidence is what made the live
+            # transcript look stalled.
+            speaker = self.preview_speaker_id
+        channel = self.speaker_channel.get(speaker) if speaker is not None else None
         if len(self.audio):
             recent = self.audio[-16_000:]
             mic = float(np.sqrt(np.mean(recent[:, 0] ** 2)))
@@ -228,7 +277,12 @@ class LiveMeeting:
                 channel = True
             elif remote >= 0.005 and remote > mic * 2:
                 channel = False
-        label = "나" if channel is True else f"화자 {speaker + 1}" if channel is False else "미확인"
+        if channel is True:
+            label = "나"
+        elif channel is False:
+            label = f"화자 {speaker + 1}" if speaker is not None else "상대방"
+        else:
+            label = "미확인"
         activity = self.diarizer.activity(segment_start, self.diarizer.covered_seconds)
         overlap = bool(len(activity) and np.mean(np.sum(activity >= 0.5, axis=1) >= 2) >= 0.2)
         return {"speaker": label, "text": source, "overlap": overlap}
@@ -239,7 +293,7 @@ class LiveMeeting:
         overlap = preview["overlap"] if preview else False
         label = preview["speaker"] if preview else None
         with self.lock:
-            if source == self.preview_text and overlap == self.preview_overlap:
+            if source == self.preview_text and overlap == self.preview_overlap and label == self.preview_speaker:
                 return
         if label and label.startswith("화자 ") and not overlap:
             model_id = int(label.split()[-1]) - 1
@@ -264,6 +318,13 @@ class LiveMeeting:
         for turn in merged:
             speaker_id = turn["speaker"]
             start = max(turn["start"], self.committed_by_speaker.get(speaker_id, 0.0))
+            # A turn long enough to be decoded on its own may take back the audio since the last
+            # decode. A shorter one is a stray fragment and is left where the diariser put it, so it
+            # cannot claim the beginning of the next speaker's sentence.
+            if turn["end"] - turn["start"] >= 0.4:
+                gap = turn["start"] - self.committed_until
+                if 0 < gap <= TURN_GAP_RECOVERY_SECONDS:
+                    start = min(start, self.committed_until)
             while start + 0.4 < turn["end"]:
                 if turn["end"] <= before and turn["end"] - start <= 6.0:
                     end = turn["end"]
@@ -309,11 +370,19 @@ class LiveMeeting:
                     row = {"start": round(start + self.offset_seconds, 2), "end": round(end + self.offset_seconds, 2), "speaker": speaker, "text": source,
                            "translation": cached, "draft_translation": None,
                            "translation_error": None, "overlap": overlap}
-                    with self.lock:
-                        self.rows.append(row)
-                    self._archive()
-                    if not cached:
-                        _translation_jobs.submit(self._translate_row, row, source)
+                    if GROUP_TRANSLATION and not cached:
+                        # Hold the row out of the transcript until its run is complete, so a card
+                        # appears once with its English and Korean together instead of being
+                        # rewritten as it grows. The live preview covers the held seconds.
+                        self._queue_translation(row)
+                    else:
+                        with self.lock:
+                            self.rows.append(row)
+                        self._archive()
+                        if cached:
+                            self._flush_translation_group()
+                        else:
+                            _translation_jobs.submit(self._translate_row, row, source)
                 start = end
                 if end >= turn["end"] - 0.05:
                     break
@@ -455,6 +524,7 @@ class LiveMeeting:
         return False
 
     def _translate_row(self, row: dict, source: str) -> None:
+        """Translate one row, or one held group of rows, and attach the result to its last row."""
         try:
             key = self._translation_key(source)
             with self.lock:
@@ -473,6 +543,55 @@ class LiveMeeting:
             with self.lock:
                 row["translation_error"] = str(error)
             self._archive()
+
+    def _queue_translation(self, row: dict) -> None:
+        """Show the run while it is spoken, then add its Korean once the run is known.
+
+        A run is consecutive rows from one speaker with no gap of GROUP_GAP_SECONDS or more between
+        them, capped at GROUP_MAX_SECONDS. The card goes into the transcript with its first row, so
+        English appears while the speaker is still talking instead of waiting for the run to end;
+        later rows of the same run only append to that card, so no text the reader has already seen
+        is rewritten or erased. Only the translation waits for the run, because a fragment cut at a
+        pause is what reaches the translator as a standalone imperative.
+        """
+        with self.lock:
+            group = self.translation_group
+            split = bool(group) and (group[-1]["speaker"] != row["speaker"]
+                                     or row["start"] - group[-1]["end"] >= GROUP_GAP_SECONDS)
+            expired = bool(group) and row["end"] - group[0]["start"] >= GROUP_MAX_SECONDS
+            if split or expired:
+                self._flush_translation_group_locked()
+            if self.translation_group:
+                card = self.translation_group[0]
+                card["text"] = f"{card['text'].strip()} {row['text'].strip()}".strip()
+                card["end"] = row["end"]
+                card["overlap"] = card["overlap"] or row["overlap"]
+            else:
+                card = row
+                self.rows.append(card)
+                # _flush_translation_group_locked replaces the list, so append through the attribute.
+                self.translation_group.append(card)
+        self._archive()
+
+    def _flush_translation_group(self) -> None:
+        with self.lock:
+            self._flush_translation_group_locked()
+        self._archive()
+
+    def _flush_translation_group_locked(self) -> None:
+        """Translate the finished run and attach the Korean to the card already on screen.
+
+        Caller holds the lock. _archive() is called by the caller: it takes self.lock, which is not
+        reentrant.
+        """
+        group = self.translation_group
+        if not group:
+            return
+        self.translation_group = []
+        card = group[0]
+        source = card["text"].strip()
+        if source:
+            _translation_jobs.submit(self._translate_row, card, source)
 
     def _archive(self) -> None:
         if self.archive_path is None:

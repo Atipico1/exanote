@@ -65,19 +65,10 @@ struct LiveTranscriptView: View {
                                 Text("겹친 발화 · 임시 문장과 화자를 확인해 주세요")
                                     .font(.exDataSmall).foregroundStyle(Color.orange)
                             }
-                            Text(preview.text).font(.exBody).foregroundStyle(.secondary)
-                            if preview.overlap == true {
-                                Text("화자별로 구분한 뒤 번역해요")
-                                    .font(.exDataSmall).foregroundStyle(.tertiary)
-                            } else if let translation = preview.translation, !translation.isEmpty {
-                                Text(translation).font(.exBody.weight(.medium))
-                                Text("듣는 중 · 문장이 확정되면 다듬어요")
-                                    .font(.exDataSmall).foregroundStyle(.tertiary)
-                            } else if preview.translation_error != nil {
-                                Text("임시 번역을 만들지 못했어요").font(.exDataSmall).foregroundStyle(Color.recording)
-                            } else {
-                                Text("듣는 중 · 문장이 끝나면 번역해요")
-                                    .font(.exDataSmall).foregroundStyle(.tertiary)
+                            Text(preview.text).font(.exBody).textSelection(.enabled)
+                            if let translation = preview.translation, !translation.isEmpty {
+                                Text(translation).font(.app(size: 12.5))
+                                    .foregroundStyle(.secondary).textSelection(.enabled)
                             }
                         }
                     }
@@ -99,20 +90,13 @@ struct LiveTranscriptView: View {
                     Text("겹친 발화 · 화자와 문장을 확인해 주세요")
                         .font(.exDataSmall).foregroundStyle(Color.orange)
                 }
-                Text(row.text).font(.exBody).foregroundStyle(.secondary).textSelection(.enabled)
+                Text(row.text).font(.exBody).textSelection(.enabled)
                 if let translation = row.translation, !translation.isEmpty {
-                    Text(translation).font(.exBody.weight(.medium)).textSelection(.enabled)
+                    Text(translation).font(.app(size: 12.5)).foregroundStyle(.secondary).textSelection(.enabled)
                 } else if let draft = row.draft_translation, !draft.isEmpty {
-                    Text(draft).font(.exBody.weight(.medium)).textSelection(.enabled)
-                    Text("문장 확정 중…").font(.exDataSmall).foregroundStyle(.tertiary)
+                    Text(draft).font(.app(size: 12.5)).foregroundStyle(.secondary).textSelection(.enabled)
                 } else if row.translation_error != nil {
                     Text("번역하지 못했어요").font(.exDataSmall).foregroundStyle(Color.recording)
-                } else {
-                    HStack(spacing: 6) {
-                        ProgressView().controlSize(.mini)
-                        Text("번역 중…")
-                    }
-                    .font(.exDataSmall).foregroundStyle(.tertiary)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -273,6 +273,16 @@ final class AppModel: ObservableObject {
         liveOverlayExpanded.toggle()
     }
 
+    func hideRecordingPill() {
+        liveOverlayExpanded = false
+        UserDefaults.standard.set(false, forKey: RecordingPrefs.showPill)
+    }
+
+    func showRecordingPill() {
+        guard session.isActive else { return }
+        UserDefaults.standard.set(true, forKey: RecordingPrefs.showPill)
+    }
+
     func addBookmark() {
         guard store.recording, let id = store.recordingID else { return }
         let time = session.seconds

@@ -32,20 +32,16 @@ struct LiveNotesView: View {
                         .font(.exBody).foregroundStyle(.secondary)
                 }
             } else {
-                if !compact {
-                    Text("들은 내용을 화자별로 적고 번역해요. 요약은 녹음 종료 후 완성됩니다.")
-                        .font(.exDataSmall).foregroundStyle(.secondary)
-                }
                 ForEach(rows) { row in
                     note(speaker: row.speaker, time: row.timestamp,
                          translation: row.translation ?? row.draft_translation,
-                         original: row.text, provisional: row.translation == nil)
+                         original: row.text)
                     if row.id != rows.last?.id { Hairline() }
                 }
                 if let preview = snapshot?.preview, !preview.text.isEmpty {
                     if !rows.isEmpty { Hairline() }
                     note(speaker: preview.speaker, time: "듣는 중",
-                         translation: preview.translation, original: preview.text, provisional: true, listening: true)
+                         translation: preview.translation, original: preview.text)
                 }
             }
         }
@@ -58,27 +54,23 @@ struct LiveNotesView: View {
         .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: rows.count)
     }
 
-    private func note(speaker: String, time: String, translation: String?, original: String, provisional: Bool,
-                      listening: Bool = false) -> some View {
+    private func note(speaker: String, time: String, translation: String?, original: String) -> some View {
         VStack(alignment: .leading, spacing: compact ? 4 : 6) {
             HStack(spacing: 7) {
                 Text(time).font(.exTimecodeSmall).foregroundStyle(.tertiary)
                 Text(speaker).font(.app(size: 11, weight: .semibold))
                     .foregroundStyle(compact ? Color.brandFill : Color.brandText)
-                if provisional { Text("작성 중").font(.exDataSmall).foregroundStyle(.tertiary) }
             }
+            Text(original).font(compact ? .app(size: 12.5, weight: .medium) : .exBody)
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
             if let translation, !translation.isEmpty {
-                Text(translation).font(compact ? .app(size: 12.5, weight: .medium) : .exBody.weight(.medium))
+                Text(translation).font(compact ? .app(size: 11) : .app(size: 12.5))
+                    .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                     .textSelection(.enabled)
-            } else {
-                Text(listening ? "말이 끝나면 번역해요" : "번역 중…")
-                    .font(.exDataSmall).foregroundStyle(.secondary)
             }
-            Text(original).font(compact ? .app(size: 11) : .exDataSmall)
-                .foregroundStyle(.secondary)
-                .lineLimit(compact ? 2 : nil)
-                .textSelection(.enabled)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)

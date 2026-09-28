@@ -166,6 +166,20 @@ final class MeetingStore: ObservableObject {
         AppPaths.data.appending(path: "ipc-token")
     }
 
+    private func acceptLiveSnapshot(_ snapshot: LiveSnapshot) {
+        if let current = live, current.meeting_id == snapshot.meeting_id {
+            guard snapshot.duration >= current.duration else { return }
+            if snapshot.duration == current.duration {
+                guard snapshot.rows.count >= current.rows.count else { return }
+                let completed = { (rows: [LiveRow]) in
+                    rows.filter { $0.translation != nil || $0.translation_error != nil }.count
+                }
+                guard completed(snapshot.rows) >= completed(current.rows) else { return }
+            }
+        }
+        live = snapshot
+    }
+
     func start() async {
         guard !started else { return }
         started = true
@@ -402,6 +416,11 @@ final class MeetingStore: ObservableObject {
             let sender = LiveAudioSender(meetingID: id,
                                          token: try String(contentsOf: tokenPath, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)) { [weak self] message in
                 Task { @MainActor in self?.liveError = message }
+            } onSnapshot: { [weak self] snapshot in
+                Task { @MainActor in
+                    guard let self, self.recordingID == id else { return }
+                    self.acceptLiveSnapshot(snapshot)
+                }
             }
             let offset = capture.setLiveChunkHandler { [sender] pcm in sender.append(pcm) }
             let snapshot: LiveSnapshot
@@ -414,13 +433,16 @@ final class MeetingStore: ObservableObject {
             }
             sender.activate()
             liveSender = sender
-            live = snapshot
+            acceptLiveSnapshot(snapshot)
             recordingMode = .liveTranslation
             livePoll?.cancel()
             livePoll = Task { [weak self] in
                 guard let self else { return }
                 while !Task.isCancelled && self.recordingID == id {
-                    if let snapshot: LiveSnapshot = try? await self.fetch("api/live/\(id)") { self.live = snapshot }
+                    if let snapshot: LiveSnapshot = try? await self.fetch("api/live/\(id)") {
+                        guard self.recordingID == id, !Task.isCancelled else { break }
+                        self.acceptLiveSnapshot(snapshot)
+                    }
                     try? await Task.sleep(for: .milliseconds(400))
                 }
             }

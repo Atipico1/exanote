@@ -378,7 +378,11 @@ async def live_chunk(meeting_id: str, request: Request, sample_rate: int = 16_00
     raw = await request.body()
     loop = asyncio.get_running_loop()
     try:
-        return await loop.run_in_executor(live_jobs, session.feed, raw, sample_rate, sequence)
+        snapshot = await loop.run_in_executor(live_jobs, session.feed, raw, sample_rate, sequence)
+        # Keep the fast ASR preview off the slower speaker-turn re-decode path.
+        # Both jobs use the same executor so a queued finish cannot overtake it.
+        live_jobs.submit(session.refine)
+        return snapshot
     except ValueError as error:
         raise HTTPException(400, str(error)) from error
 

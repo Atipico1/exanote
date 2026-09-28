@@ -5,17 +5,20 @@ import Foundation
 final class LiveAudioSender: @unchecked Sendable {
     private let meetingID: String
     private let token: String
-    private let queue = DispatchQueue(label: "exanote.live-upload", qos: .utility)
+    private let queue = DispatchQueue(label: "exanote.live-upload", qos: .userInitiated)
     private let onError: @Sendable (String) -> Void
+    private let onSnapshot: @Sendable (LiveSnapshot) -> Void
     private var failed = false
     private var nextSequence = 0
     private var ready = false
     private var buffered: [Data] = []
 
-    init(meetingID: String, token: String, onError: @escaping @Sendable (String) -> Void) {
+    init(meetingID: String, token: String, onError: @escaping @Sendable (String) -> Void,
+         onSnapshot: @escaping @Sendable (LiveSnapshot) -> Void) {
         self.meetingID = meetingID
         self.token = token
         self.onError = onError
+        self.onSnapshot = onSnapshot
     }
 
     func append(_ pcm: Data) {
@@ -38,8 +41,11 @@ final class LiveAudioSender: @unchecked Sendable {
         let operation = "chunk?sample_rate=48000&sequence=\(nextSequence)"
         var delivered = false
         for attempt in 0..<3 {
-            if request(operation, body: pcm) {
+            if let response = request(operation, body: pcm) {
                 delivered = true
+                if let snapshot = try? JSONDecoder().decode(LiveSnapshot.self, from: response) {
+                    onSnapshot(snapshot)
+                }
                 break
             }
             if attempt < 2 { Thread.sleep(forTimeInterval: 0.2) }
@@ -61,8 +67,8 @@ final class LiveAudioSender: @unchecked Sendable {
     }
 
     @discardableResult
-    private func request(_ operation: String, body: Data) -> Bool {
-        guard let url = URL(string: "http://127.0.0.1:8765/api/live/\(meetingID)/\(operation)") else { return false }
+    private func request(_ operation: String, body: Data) -> Data? {
+        guard let url = URL(string: "http://127.0.0.1:8765/api/live/\(meetingID)/\(operation)") else { return nil }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = body
@@ -70,13 +76,15 @@ final class LiveAudioSender: @unchecked Sendable {
         request.setValue(token, forHTTPHeaderField: "X-Exanote-Token")
         request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         let semaphore = DispatchSemaphore(value: 0)
-        var okay = false
-        URLSession.shared.dataTask(with: request) { _, response, _ in
-            okay = (response as? HTTPURLResponse).map { (200..<300).contains($0.statusCode) } ?? false
+        var result: Data?
+        URLSession.shared.dataTask(with: request) { data, response, _ in
+            if (response as? HTTPURLResponse).map({ (200..<300).contains($0.statusCode) }) == true {
+                result = data
+            }
             semaphore.signal()
         }.resume()
         semaphore.wait()
-        return okay
+        return result
     }
 
     private func fail(_ message: String) {
